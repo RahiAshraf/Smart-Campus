@@ -35,7 +35,7 @@ class AdminDashboardService
         );
         $teacher_total = $this->scalar("SELECT COUNT(*) FROM teacher_attendance");
         $teacher_rate = $teacher_total > 0
-            ? round(($teacher_present / $teacher_total) * 100, 1)
+            ? round(($teacher_present / $teacher_total) * 100, 2)
             : 0;
 
         $uid = (int) ($_SESSION['user']['id'] ?? 0);
@@ -78,7 +78,7 @@ class AdminDashboardService
                  WHERE DATE_FORMAT(a.attendance_date,'%Y-%m') = '$month'"
             );
 
-            $values[] = $total > 0 ? round(($present / $total) * 100, 1) : 0;
+            $values[] = $total > 0 ? round(($present / $total) * 100, 2) : 0;
         }
 
         return ['labels' => $labels, 'values' => $values];
@@ -109,7 +109,7 @@ class AdminDashboardService
         while ($query && $row = mysqli_fetch_assoc($query)) {
             $labels[] = $row['class_name'];
             $rate = (int) $row['total'] > 0
-                ? round(((int) $row['present'] / (int) $row['total']) * 100, 1)
+                ? round(((int) $row['present'] / (int) $row['total']) * 100, 2)
                 : 0;
             $values[] = $rate;
         }
@@ -137,7 +137,7 @@ class AdminDashboardService
                  WHERE DATE_FORMAT(attendance_date,'%Y-%m') = '$month'"
             );
 
-            $values[] = $total > 0 ? round(($present / $total) * 100, 1) : 0;
+            $values[] = $total > 0 ? round(($present / $total) * 100, 2) : 0;
         }
 
         return ['labels' => $labels, 'values' => $values];
@@ -192,7 +192,7 @@ class AdminDashboardService
         $classes = [];
 
         while ($query && $row = mysqli_fetch_assoc($query)) {
-            $rate = round(((int) $row['present'] / (int) $row['total']) * 100, 1);
+            $rate = round(((int) $row['present'] / (int) $row['total']) * 100, 2);
             $name = $row['class_name'] . ' - ' . $row['section_name'];
             $classes[] = ['name' => $name, 'rate' => $rate];
         }
@@ -258,16 +258,22 @@ class AdminDashboardService
 }
 public function getFinanceOverview(): array
 {
+    $salaryExpense = $this->scalarFloat("
+        SELECT COALESCE(SUM(amount_paid),0)
+        FROM salary_payments
+    ");
+    $feeCollected = $this->scalarFloat("
+        SELECT COALESCE(SUM(amount_paid),0)
+        FROM fee_payments
+    ");
+
     return [
         'total_assigned' => $this->scalarFloat("
             SELECT COALESCE(SUM(amount),0)
             FROM student_fees
         "),
 
-        'total_collected' => $this->scalarFloat("
-            SELECT COALESCE(SUM(amount_paid),0)
-            FROM fee_payments
-        "),
+        'total_collected' => $feeCollected,
 
         'pending_amount' => $this->scalarFloat("
             SELECT COALESCE(SUM(balance_amount),0)
@@ -284,6 +290,34 @@ public function getFinanceOverview(): array
             SELECT COALESCE(SUM(amount_paid),0)
             FROM fee_payments
             WHERE DATE(payment_date)=CURDATE()
+        "),
+
+        'salary_expense' => $salaryExpense,
+        'net_balance' => $feeCollected - $salaryExpense,
+    ];
+}
+
+public function getSalaryOverview(): array
+{
+    return [
+        'active_records' => $this->scalar("
+            SELECT COUNT(*)
+            FROM teacher_salaries
+            WHERE status='active'
+        "),
+        'active_payroll' => $this->scalarFloat("
+            SELECT COALESCE(SUM(monthly_salary),0)
+            FROM teacher_salaries
+            WHERE status='active'
+        "),
+        'paid_this_month' => $this->scalarFloat("
+            SELECT COALESCE(SUM(amount_paid),0)
+            FROM salary_payments
+            WHERE pay_period = DATE_FORMAT(CURDATE(), '%Y-%m')
+        "),
+        'total_paid' => $this->scalarFloat("
+            SELECT COALESCE(SUM(amount_paid),0)
+            FROM salary_payments
         "),
     ];
 }
@@ -402,6 +436,40 @@ public function getRecentAdmissions(int $limit=5): array
         ON u.id=s.user_id
 
         ORDER BY fp.payment_date DESC
+
+        LIMIT {$limit}"
+    );
+
+    while($q && $row=mysqli_fetch_assoc($q)){
+        $items[]=$row;
+    }
+
+    return $items;
+}public function getRecentSalaryPayments(int $limit=5): array
+{
+    $items=[];
+    if (!$this->tablesExist(['salary_payments', 'teachers', 'users'])) {
+        return $items;
+    }
+
+    $q=mysqli_query(
+        $this->conn,
+        "SELECT
+        sp.receipt_no,
+        sp.amount_paid,
+        sp.payment_date,
+        sp.pay_period,
+        u.full_name
+
+        FROM salary_payments sp
+
+        INNER JOIN teachers t
+        ON t.id=sp.teacher_id
+
+        LEFT JOIN users u
+        ON u.id=t.user_id
+
+        ORDER BY sp.payment_date DESC, sp.payment_id DESC
 
         LIMIT {$limit}"
     );
@@ -540,7 +608,7 @@ public function getExamPerformanceTrend(int $limit = 6): array
         $labels[] = $row['exam_name'];
         $totalMarks = (float) ($row['total_marks'] ?: 100);
         $averageMarks = (float) ($row['average_marks'] ?? 0);
-        $values[] = $totalMarks > 0 ? round(($averageMarks / $totalMarks) * 100, 1) : 0;
+        $values[] = $totalMarks > 0 ? round(($averageMarks / $totalMarks) * 100, 2) : 0;
     }
 
     return ['labels' => $labels, 'values' => $values];
@@ -589,7 +657,7 @@ public function getUpcomingEvents(int $limit = 5): array
         $present = $this->scalar($present_sql);
         $total   = $this->scalar("SELECT COUNT(*) FROM attendance_records");
 
-        return $total > 0 ? round(($present / $total) * 100, 1) : 0;
+        return $total > 0 ? round(($present / $total) * 100, 2) : 0;
     }
 
     private function upcomingExamCount(): int

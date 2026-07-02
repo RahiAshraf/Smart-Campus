@@ -275,6 +275,14 @@ $overall_attendance_rate = round(
 
     <meta charset="UTF-8">
 
+<script>
+(() => {
+    if (localStorage.getItem("mindmerge-theme") === "dark") {
+        document.documentElement.classList.add("dark-mode");
+    }
+})();
+</script>
+
     <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0">
@@ -283,6 +291,7 @@ $overall_attendance_rate = round(
     Attendance Management | MindMerge SmartCampus
     </title>
 
+    
 
     <link rel="stylesheet" href="../assets/css/global.css">
     <link rel="stylesheet" href="../assets/css/layout.css">

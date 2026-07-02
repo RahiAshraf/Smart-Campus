@@ -244,6 +244,20 @@ function permission_module_registry(): array
     'action' => 'view',
     'match'  => '/fees/',
     ],
+        'salaries' => [
+            'label'  => 'Salaries',
+            'icon'   => 'fa-user-tie',
+            'url'    => 'salaries/index.php',
+            'action' => 'view',
+            'match'  => '/salaries/',
+        ],
+        'billing' => [
+            'label'  => 'Billing',
+            'icon'   => 'fa-chart-line',
+            'url'    => 'billing/index.php',
+            'action' => 'view',
+            'match'  => '/billing/',
+        ],
         'transport' => [
             'label'  => 'Transport',
             'icon'   => 'fa-bus',
@@ -441,7 +455,9 @@ function permission_portal_menu_groups(): array
 
             ['label' => 'Finance', 'items' =>
             [
-            'fees'
+            'fees',
+            'salaries',
+            'billing'
             ]],
             ['label' => 'Administration', 'items' => ['permissions']],
         ],
@@ -539,6 +555,8 @@ function permission_portal_menu_groups(): array
     'results',
     'exams',
     'fees',
+    'salaries',
+    'billing',
     'transport',
     'permissions',
 ];
@@ -613,7 +631,9 @@ function permission_menu_path_groups(): array
 {
     return [
         'attendance' => [
-            '#/attendance/#',
+                '#/attendance/index\.php$#',
+                '#/attendance/$#',
+                '#/attendance/(mark|edit|view|delete|report|get_|check_)#',
         ],
         'teacher_student_attendance' => [
             '#/teacher/attendance/#',
@@ -656,6 +676,12 @@ function permission_menu_path_groups(): array
         ],
         'student_timetable' => [
             '#/student/timetable/#',
+        ],
+        'salaries' => [
+            '#/salaries/#',
+        ],
+        'billing' => [
+            '#/billing/#',
         ],
     ];
 }
@@ -888,6 +914,19 @@ function permission_resolve_route(string $uri, string $script): ?array
  'module' => 'fees',
  'action' => 'view'],
 
+        ['pattern' => '#/salaries/add#',             'module' => 'salaries', 'action' => 'create'],
+        ['pattern' => '#/salaries/edit#',            'module' => 'salaries', 'action' => 'edit'],
+        ['pattern' => '#/salaries/delete#',          'module' => 'salaries', 'action' => 'delete'],
+        ['pattern' => '#/salaries/pay#',             'module' => 'salaries', 'action' => 'edit'],
+        ['pattern' => '#/salaries/payment-edit#',    'module' => 'salaries', 'action' => 'edit'],
+        ['pattern' => '#/salaries/payment-delete#',  'module' => 'salaries', 'action' => 'delete'],
+        ['pattern' => '#/salaries/payment-view#',    'module' => 'salaries', 'action' => 'view'],
+        ['pattern' => '#/salaries/payments#',        'module' => 'salaries', 'action' => 'view'],
+        ['pattern' => '#/salaries/view#',            'module' => 'salaries', 'action' => 'view'],
+        ['pattern' => '#/salaries/#',                'module' => 'salaries', 'action' => 'view'],
+
+        ['pattern' => '#/billing/#',                 'module' => 'billing', 'action' => 'view'],
+
         ['pattern' => '#/transport/.+/add#',           'module' => 'transport', 'action' => 'create'],
         ['pattern' => '#/transport/.+/edit#',          'module' => 'transport', 'action' => 'edit'],
         ['pattern' => '#/transport/.+/delete#',        'module' => 'transport', 'action' => 'delete'],
@@ -1031,6 +1070,35 @@ function permission_fetch_all_grouped(mysqli $conn): array
     return $grouped;
 }
 
+function permission_ensure_finance_permissions(mysqli $conn): void
+{
+    $rows = [
+        ['fees', 'view', 'View Fees', 900],
+        ['fees', 'create', 'Create Fees', 901],
+        ['fees', 'edit', 'Edit/Collect Fees', 902],
+        ['fees', 'delete', 'Delete Fees', 903],
+        ['salaries', 'view', 'View Salaries', 910],
+        ['salaries', 'create', 'Create Salaries', 911],
+        ['salaries', 'edit', 'Edit/Pay Salaries', 912],
+        ['salaries', 'delete', 'Delete Salaries', 913],
+        ['billing', 'view', 'View Billing', 920],
+    ];
+
+    foreach ($rows as $row) {
+        [$module, $action, $label, $order] = $row;
+        mysqli_query(
+            $conn,
+            "INSERT IGNORE INTO permissions (module_key, action_key, label, sort_order)
+             VALUES (
+                '" . mysqli_real_escape_string($conn, $module) . "',
+                '" . mysqli_real_escape_string($conn, $action) . "',
+                '" . mysqli_real_escape_string($conn, $label) . "',
+                '" . (int) $order . "'
+             )"
+        );
+    }
+}
+
 
 function permission_module_label(string $module_key): string
 {
@@ -1043,6 +1111,8 @@ function permission_module_label(string $module_key): string
         'teacher_timetable' => 'Timetable (Teacher Portal)',
         'teacher_reports' => 'Reports (Teacher Portal)',
         'fees' => 'Fees Management',
+        'salaries' => 'Salaries Management',
+        'billing' => 'Billing',
         'teacher_attendance' => 'Teacher Attendance',
         'student_attendance' => 'Attendance (Student Portal)',
         'student_timetable' => 'Timetable (Student Portal)',

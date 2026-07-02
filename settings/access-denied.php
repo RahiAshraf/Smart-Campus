@@ -22,6 +22,7 @@ $dashboard_url = $is_authenticated
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/components.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/portals.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 <style>
 
 .access-denied-content{

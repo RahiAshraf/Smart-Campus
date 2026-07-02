@@ -100,12 +100,111 @@ function register_selected(string $key, string $value): string
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Register | MindMerge SmartCampus</title>
+
+<script>
+if(localStorage.getItem("mindmerge-theme") === "dark"){
+    document.documentElement.classList.add("dark-mode");
+}
+</script>
+
 <link rel="stylesheet" href="../assets/css/global.css">
 <link rel="stylesheet" href="../assets/css/components.css">
 <link rel="stylesheet" href="../assets/css/auth.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
+
+<style>
+body.dark-mode {
+    background: #020817;
+    color: #f8fafc;
+}
+
+.auth-theme-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    z-index:999;
+
+    width:44px;
+    height:44px;
+    border:none;
+    border-radius:50%;
+
+    background:#ffffff;
+       color:#111827;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+    cursor:pointer;
+}
+
+body.dark-mode .auth-theme-btn{
+    background:#1e293b;
+    color:#f8fafc;
+}
+
+html.dark-mode body,
+body.dark-mode{
+    background:#020817 !important;
+    color:#f8fafc !important;
+}
+
+html.dark-mode .auth-register-shell{
+    background:#020817 !important;
+}
+
+html.dark-mode .auth-register-card{
+    background:#071126 !important;
+    border:1px solid #334155 !important;
+}
+
+html.dark-mode .auth-brand strong,
+html.dark-mode .auth-register-header h1,
+html.dark-mode .auth-section-title h2,
+html.dark-mode .auth-field label{
+    color:#f8fafc !important;
+}
+
+html.dark-mode .auth-brand small,
+html.dark-mode .auth-register-header p,
+html.dark-mode .auth-section-title p,
+html.dark-mode .auth-register-actions p,
+html.dark-mode .auth-password-rules li,
+html.dark-mode .auth-field-help{
+    color:#94a3b8 !important;
+}
+
+html.dark-mode .auth-input-wrap,
+html.dark-mode .auth-input-wrap input,
+html.dark-mode .auth-input-wrap select,
+html.dark-mode .auth-input-wrap textarea{
+    background:#111c31 !important;
+    border-color:#334155 !important;
+    color:#f8fafc !important;
+}
+
+html.dark-mode .auth-input-wrap input::placeholder,
+html.dark-mode .auth-input-wrap textarea::placeholder{
+    color:#94a3b8 !important;
+}
+
+html.dark-mode .auth-step-line{
+    background:#334155 !important;
+}
+</style>
+
 <body class="auth-v2">
+
+
+<a href="/SmartCampus/index.php" class="back-landing-btn">
+    <i class="fa-solid fa-arrow-left"></i>
+    Back to Home Page
+</a>
+
+<button type="button" id="themeToggle" class="auth-theme-btn">
+    <i class="fa-solid fa-moon"></i>
+</button>
+
 <main class="auth-register-shell">
 <section class="auth-register-card">
 <header class="auth-register-header">
@@ -395,5 +494,8 @@ document.addEventListener('DOMContentLoaded', function () {
     updateRoleFields();
 });
 </script>
+
+<script src="../assets/js/common.js"></script>
+
 </body>
 </html>

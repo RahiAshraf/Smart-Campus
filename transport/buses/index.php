@@ -146,6 +146,7 @@ href="../../assets/css/components.css">
 <link
 rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 
 </head>
 
@@ -260,47 +261,38 @@ echo "Unable to delete bus.";
 <?php } ?>
 
 <!-- Statistics -->
-
 <div class="dashboard-grid">
 
 <div class="dashboard-card">
-
-<h3>Total Buses</h3>
-
-<h2>
-<?php echo $total_buses; ?>
-</h2>
-
+    <div>
+        <h3>Total Buses</h3>
+        <h2><?php echo $total_buses; ?></h2>
+    </div>
+    <div class="card-icon"><i class="fa-solid fa-bus"></i></div>
 </div>
 
 <div class="dashboard-card">
-
-<h3>Active Buses</h3>
-
-<h2>
-<?php echo $active_buses; ?>
-</h2>
-
+    <div>
+        <h3>Active Buses</h3>
+        <h2><?php echo $active_buses; ?></h2>
+    </div>
+    <div class="card-icon"><i class="fa-solid fa-circle-check"></i></div>
 </div>
 
 <div class="dashboard-card">
-
-<h3>Total Capacity</h3>
-
-<h2>
-<?php echo $total_capacity; ?>
-</h2>
-
+    <div>
+        <h3>Total Capacity</h3>
+        <h2><?php echo $total_capacity; ?></h2>
+    </div>
+    <div class="card-icon"><i class="fa-solid fa-users"></i></div>
 </div>
 
 <div class="dashboard-card">
-
-<h3>Assigned Students</h3>
-
-<h2>
-<?php echo $total_assigned; ?>
-</h2>
-
+    <div>
+        <h3>Assigned Students</h3>
+        <h2><?php echo $total_assigned; ?></h2>
+    </div>
+    <div class="card-icon"><i class="fa-solid fa-user-graduate"></i></div>
 </div>
 
 </div>

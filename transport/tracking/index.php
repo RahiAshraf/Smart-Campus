@@ -147,6 +147,7 @@ function e($value): string
 <link rel="stylesheet" href="../../assets/css/dashboard-components.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 <style>
 .tracking-map{height:650px;min-height:380px;width:100%;border-radius:16px;overflow:hidden;border:1px solid var(--border-color);}
 .tracking-toolbar{display:flex;gap:14px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;}

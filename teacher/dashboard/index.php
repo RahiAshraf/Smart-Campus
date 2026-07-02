@@ -3,11 +3,13 @@
 require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../config/permissions.php';
+require_once __DIR__ . '/../../config/finance.php';
 require_once __DIR__ . '/../../shared/services/TeacherScopeService.php';
 require_once __DIR__ . '/../../shared/services/TeacherDashboardService.php';
 require_once __DIR__ . '/../../shared/helpers/portal.php';
 
 portal_require_role(['teacher']);
+finance_ensure_tables($conn);
 
 $scope = new TeacherScopeService($conn, (int) $_SESSION['user']['id']);
 $service = new TeacherDashboardService($conn, $scope);
@@ -19,6 +21,7 @@ $markingTrend = $service->getAttendanceMarkingTrend();
 $studentTrend = $service->getStudentAttendanceTrend();
 $performance = $service->getStudentPerformance();
 $assignments = $service->getAssignmentOverview();
+$salary = $service->getSalarySummary();
 $upcomingExams = $service->getUpcomingExams();
 $notifications = $service->getRecentNotifications();
 $teacher = $scope->getTeacher();
@@ -39,6 +42,11 @@ function short_time($value): string
     return $value ? date('g:i A', strtotime($value)) : 'All day';
 }
 
+function money($value): string
+{
+    return finance_money($value);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,6 +60,7 @@ function short_time($value): string
 <link rel="stylesheet" href="../../assets/css/dashboard-components.css">
 <link rel="stylesheet" href="../../assets/css/portals.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 </head>
 <body>
 <div class="app-layout">
@@ -78,8 +87,9 @@ function short_time($value): string
 <section class="stats-grid">
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div><div class="stat-content"><span class="stat-label">Today's Classes</span><span class="stat-value"><?php echo number_format($stats['today_classes']); ?></span><span class="stat-description">Scheduled periods today</span></div></div>
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div><div class="stat-content"><span class="stat-label">Pending Attendance</span><span class="stat-value"><?php echo number_format($stats['pending_attendance']); ?></span><span class="stat-description">Class sections to mark</span></div></div>
-<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-content"><span class="stat-label">Completed</span><span class="stat-value"><?php echo number_format($stats['completed_attendance']); ?></span><span class="stat-description"><?php echo number_format($insights['attendance_completion_pct'], 1); ?>% completion</span></div></div>
+<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-content"><span class="stat-label">Completed</span><span class="stat-value"><?php echo number_format($stats['completed_attendance']); ?></span><span class="stat-description"><?php echo number_format($insights['attendance_completion_pct'], 2); ?>% completion</span></div></div>
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div><div class="stat-content"><span class="stat-label">Upcoming Exams</span><span class="stat-value"><?php echo number_format($stats['upcoming_exams']); ?></span><span class="stat-description">Assigned classes</span></div></div>
+<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-wallet"></i></div><div class="stat-content"><span class="stat-label">Salary</span><span class="stat-value"><?php echo money($salary['monthly_salary']); ?></span><span class="stat-description"><?php echo e(ucfirst($salary['status'])); ?> payroll</span></div></div>
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-bell"></i></div><div class="stat-content"><span class="stat-label">Notifications</span><span class="stat-value"><?php echo number_format($stats['unread_notifications']); ?></span><span class="stat-description">Unread alerts</span></div></div>
 </section>
 
@@ -131,6 +141,18 @@ function short_time($value): string
 </section>
 
 <section class="dashboard-grid-3">
+<div class="info-panel">
+<h3 class="info-panel-title"><i class="fa-solid fa-money-check-dollar"></i>Salary Details</h3>
+<div class="info-list">
+<div class="info-list-item"><span>Monthly Salary</span><strong><?php echo money($salary['monthly_salary']); ?></strong></div>
+<div class="info-list-item"><span>Paid This Month</span><strong><?php echo money($salary['paid_this_month']); ?></strong></div>
+<div class="info-list-item"><span>Status</span><strong><?php echo e(ucfirst($salary['status'])); ?></strong></div>
+<?php if (!empty($salary['last_payment'])) { ?>
+<div class="info-list-item"><span>Last Payment</span><strong><?php echo money($salary['last_payment']['amount_paid']); ?></strong></div>
+<div class="info-list-item"><span>Last Receipt</span><strong><?php echo e($salary['last_payment']['receipt_no']); ?></strong></div>
+<?php } ?>
+</div>
+</div>
 <div class="dashboard-widget">
 <div class="dashboard-widget-header"><div class="dashboard-widget-title"><i class="fa-solid fa-book"></i><div><h4>Assignments</h4><span>Assigned subjects and sections</span></div></div></div>
 <div class="dashboard-widget-body dashboard-table-wrap">

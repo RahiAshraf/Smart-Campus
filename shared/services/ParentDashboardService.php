@@ -81,7 +81,7 @@ class ParentDashboardService
                 $total_att += $total > 0 ? ($present / $total) * 100 : 0;
             }
 
-            $avg_attendance = round($total_att / $count, 1);
+            $avg_attendance = round($total_att / $count, 2);
         }
 
         $uid = (int) ($_SESSION['user']['id'] ?? 0);
@@ -131,7 +131,7 @@ class ParentDashboardService
                    AND a.attendance_date = '$date'"
             );
 
-            $values[] = $total > 0 ? round(($present / $total) * 100, 1) : null;
+            $values[] = $total > 0 ? round(($present / $total) * 100, 2) : null;
         }
 
         return ['labels' => $labels, 'values' => $values];
@@ -159,7 +159,7 @@ class ParentDashboardService
             $total = $this->scalar(
                 "SELECT COUNT(*) FROM attendance_records WHERE student_id = '$sid'"
             );
-            $rate = $total > 0 ? round(($present / $total) * 100, 1) : 100;
+            $rate = $total > 0 ? round(($present / $total) * 100, 2) : 100;
 
             if ($rate < 75) {
                 $alerts[] = [
@@ -209,7 +209,7 @@ class ParentDashboardService
             $sid = (int) $child['id'];
             $present = $this->tableExists('attendance_records') ? $this->scalar("SELECT COUNT(*) FROM attendance_records WHERE student_id = '$sid' AND status != 'absent'") : 0;
             $total = $this->tableExists('attendance_records') ? $this->scalar("SELECT COUNT(*) FROM attendance_records WHERE student_id = '$sid'") : 0;
-            $attendance = $total > 0 ? round(($present / $total) * 100, 1) : 0;
+            $attendance = $total > 0 ? round(($present / $total) * 100, 2) : 0;
             $feeBalance = $this->tableExists('student_fees') ? $this->scalarFloat("SELECT COALESCE(SUM(balance_amount),0) FROM student_fees WHERE student_id = '$sid'") : 0;
             $latest = $this->tablesExist(['result_marks', 'results', 'exams']) ? mysqli_fetch_assoc(mysqli_query(
                 $this->conn,
@@ -224,7 +224,7 @@ class ParentDashboardService
 
             $performance = null;
             if ($latest && (float) $latest['total_marks'] > 0) {
-                $performance = round(((float) $latest['marks_obtained'] / (float) $latest['total_marks']) * 100, 1);
+                $performance = round(((float) $latest['marks_obtained'] / (float) $latest['total_marks']) * 100, 2);
             }
 
             $items[] = [
@@ -263,6 +263,63 @@ class ParentDashboardService
             'paid' => $this->scalarFloat("SELECT COALESCE(SUM(paid_amount),0) FROM student_fees WHERE student_id IN ($ids)"),
             'balance' => $this->scalarFloat("SELECT COALESCE(SUM(balance_amount),0) FROM student_fees WHERE student_id IN ($ids)"),
         ];
+    }
+
+    public function getFeeDetails(int $limit = 8): array
+    {
+        $ids = $this->childIdList();
+        $items = [];
+
+        if ($ids === '' || !$this->tablesExist(['student_fees', 'fee_structures', 'students', 'users'])) {
+            return $items;
+        }
+
+        $query = mysqli_query(
+            $this->conn,
+            "SELECT sf.*, fs.fee_name, fs.due_date, fs.academic_year, u.full_name
+             FROM student_fees sf
+             INNER JOIN fee_structures fs ON fs.fee_structure_id = sf.fee_structure_id
+             INNER JOIN students st ON st.id = sf.student_id
+             INNER JOIN users u ON u.id = st.user_id
+             WHERE sf.student_id IN ($ids)
+             ORDER BY fs.due_date ASC, sf.student_fee_id DESC
+             LIMIT $limit"
+        );
+
+        while ($query && $row = mysqli_fetch_assoc($query)) {
+            $items[] = $row;
+        }
+
+        return $items;
+    }
+
+    public function getRecentFeePayments(int $limit = 6): array
+    {
+        $ids = $this->childIdList();
+        $items = [];
+
+        if ($ids === '' || !$this->tablesExist(['fee_payments', 'student_fees', 'fee_structures', 'students', 'users'])) {
+            return $items;
+        }
+
+        $query = mysqli_query(
+            $this->conn,
+            "SELECT fp.receipt_no, fp.amount_paid, fp.payment_date, fp.payment_method, fs.fee_name, u.full_name
+             FROM fee_payments fp
+             INNER JOIN student_fees sf ON sf.student_fee_id = fp.student_fee_id
+             INNER JOIN fee_structures fs ON fs.fee_structure_id = sf.fee_structure_id
+             INNER JOIN students st ON st.id = sf.student_id
+             INNER JOIN users u ON u.id = st.user_id
+             WHERE sf.student_id IN ($ids)
+             ORDER BY fp.payment_date DESC, fp.payment_id DESC
+             LIMIT $limit"
+        );
+
+        while ($query && $row = mysqli_fetch_assoc($query)) {
+            $items[] = $row;
+        }
+
+        return $items;
     }
 
     public function getUpcomingExams(int $limit = 6): array
@@ -326,7 +383,7 @@ class ParentDashboardService
         while ($query && $row = mysqli_fetch_assoc($query)) {
             $total = (float) ($row['total_marks'] ?: 100);
             $labels[] = $row['exam_name'];
-            $values[] = $total > 0 ? round(((float) $row['average_marks'] / $total) * 100, 1) : 0;
+            $values[] = $total > 0 ? round(((float) $row['average_marks'] / $total) * 100, 2) : 0;
         }
 
         return ['labels' => $labels, 'values' => $values];
@@ -477,7 +534,7 @@ class ParentDashboardService
              WHERE rm.student_id IN ($ids) AND r.status = 'published'"
         ));
 
-        return $row ? round((float) ($row['avg_pct'] ?? 0), 1) : 0;
+        return $row ? round((float) ($row['avg_pct'] ?? 0), 2) : 0;
     }
 
     private function tableHasColumn(string $table, string $column): bool

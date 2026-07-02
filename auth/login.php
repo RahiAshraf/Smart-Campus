@@ -27,7 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $admin_account = !empty($attempt['admin_account']);
 }
 
-$logged_out = isset($_GET['logout']);
+$logout_message = '';
+
+if (isset($_SESSION['logout_message'])) {
+    $logout_message = $_SESSION['logout_message'];
+    unset($_SESSION['logout_message']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,11 +44,55 @@ $logged_out = isset($_GET['logout']);
 <link rel="stylesheet" href="../assets/css/components.css">
 <link rel="stylesheet" href="../assets/css/auth.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head><body class="auth-v2">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
+
+</head>
+<style>.auth-theme-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    z-index:999;
+
+    width:44px;
+    height:44px;
+    border:none;
+    border-radius:50%;
+
+    background:#ffffff;
+     color:#111827;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+    cursor:pointer;
+}
+
+body.dark-mode .auth-theme-btn{
+    background:#1e293b;
+    color:#f8fafc;
+}
+</style>
+
+<body class="auth-v2">
+
+<a href="/SmartCampus/index.php" class="back-landing-btn">
+    <i class="fa-solid fa-arrow-left"></i>
+    Back to Home Page
+</a>
+
+<button type="button" id="themeToggle" class="auth-theme-btn">
+    <i class="fa-solid fa-moon"></i>
+</button>
+
 
 <main class="auth-container">
 
 <div class="auth-card">
+
+<?php if ($logout_message): ?>
+<div class="auth-floating-alert" id="logoutToast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span><?= htmlspecialchars($logout_message) ?></span>
+</div>
+<?php endif; ?>
 
 <div class="auth-logo">
 <i class="fa-solid fa-graduation-cap"></i>
@@ -58,12 +107,6 @@ $logged_out = isset($_GET['logout']);
 <p>Welcome back — enter your credentials to continue.</p>
 </div>
 
-<?php if ($logged_out) { ?>
-<div class="auth-alert success">
-<i class="fa-solid fa-circle-check"></i>
-<span>You have been signed out.</span>
-</div>
-<?php } ?>
 
 <?php if ($error !== '') { ?>
 <div class="auth-alert error">
@@ -162,6 +205,24 @@ Admin Login
 </main>
 
 <script src="../assets/js/auth.js"></script>
+<script src="../assets/js/common.js"></script>
+
+<script>
+setTimeout(() => {
+    const toast = document.getElementById('logoutToast');
+
+    if (toast) {
+        toast.style.transition = '0.4s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, -10px)';
+
+        setTimeout(() => {
+            toast.remove();
+        }, 400);
+    }
+}, 3000);
+</script>
+
 
 </body>
 </html>

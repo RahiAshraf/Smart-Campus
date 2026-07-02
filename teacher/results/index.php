@@ -25,6 +25,7 @@ $results = $service->getResultsForTeacher($scope->getTeacherId());
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/portals.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 </head>
 <body>
 <div class="app-layout">

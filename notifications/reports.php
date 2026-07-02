@@ -84,6 +84,7 @@ $recent_query = mysqli_query(
 <link rel="stylesheet" href="../assets/css/components.css">
 <link rel="stylesheet" href="../assets/css/notifications.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 </head>
 <body>
 <div class="app-layout">
@@ -104,7 +105,7 @@ $recent_query = mysqli_query(
 <div class="dashboard-card stat-card"><div class="stat-top"><div class="card-icon"><i class="fa-solid fa-bell"></i></div><h3><?php echo $total; ?></h3></div><p>Total Notifications</p></div>
 <div class="dashboard-card stat-card"><div class="stat-top"><div class="card-icon green"><i class="fa-solid fa-envelope-open"></i></div><h3><?php echo $read_count; ?></h3></div><p>Read</p></div>
 <div class="dashboard-card stat-card"><div class="stat-top"><div class="card-icon orange"><i class="fa-solid fa-envelope"></i></div><h3><?php echo $unread_count; ?></h3></div><p>Unread</p></div>
-<div class="dashboard-card stat-card"><div class="stat-top"><div class="card-icon blue"><i class="fa-solid fa-percent"></i></div><h3><?php echo $total > 0 ? round(($read_count / $total) * 100, 1) : 0; ?>%</h3></div><p>Read Rate</p></div>
+<div class="dashboard-card stat-card"><div class="stat-top"><div class="card-icon blue"><i class="fa-solid fa-percent"></i></div><h3><?php echo $total > 0 ? round(($read_count / $total) * 100, 2) : 0; ?>%</h3></div><p>Read Rate</p></div>
 </div>
 
 <div class="dashboard-section">
@@ -141,7 +142,7 @@ $recent_query = mysqli_query(
 <tr><td colspan="3"><div class="empty-state"><i class="fa-solid fa-chart-pie"></i><h3>No data</h3><p>No notifications match the selected filters.</p></div></td></tr>
 <?php } else { foreach ($by_type as $row) {
     $cfg = $type_config[$row['type']] ?? $type_config['general'];
-    $share = $total > 0 ? round(((int) $row['total'] / $total) * 100, 1) : 0;
+    $share = $total > 0 ? round(((int) $row['total'] / $total) * 100, 2) : 0;
 ?>
 <tr>
 <td><span class="status <?php echo $cfg['class']; ?>"><i class="fa-solid <?php echo $cfg['icon']; ?>"></i> <?php echo htmlspecialchars($cfg['label']); ?></span></td>

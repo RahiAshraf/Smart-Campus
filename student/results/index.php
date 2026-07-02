@@ -38,6 +38,7 @@ function result_date($value, $fallback): string
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/dashboard-components.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 </head>
 <body>
 <div class="app-layout">
@@ -54,7 +55,7 @@ function result_date($value, $fallback): string
 <div class="hero-meta">
 <span class="hero-badge"><i class="fa-solid fa-id-card"></i><?php echo e($student['student_id'] ?? 'Student'); ?></span>
 <span class="hero-badge"><i class="fa-solid fa-school"></i><?php echo e(trim(($student['class_name'] ?? '') . ' ' . ($student['section_name'] ?? ''))); ?></span>
-<span class="hero-badge"><i class="fa-solid fa-chart-line"></i><?php echo $latest ? number_format((float) $latest['percentage'], 1) . '% latest' : 'No published result'; ?></span>
+<span class="hero-badge"><i class="fa-solid fa-chart-line"></i><?php echo $latest ? number_format((float) $latest['percentage'], 2) . '% latest' : 'No published result'; ?></span>
 </div>
 </div>
 <div class="hero-illustration"><i class="fa-solid fa-square-poll-vertical"></i></div>
@@ -62,7 +63,7 @@ function result_date($value, $fallback): string
 
 <section class="stats-grid">
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-file-circle-check"></i></div><div class="stat-content"><span class="stat-label">Published Results</span><span class="stat-value"><?php echo number_format(count($rows)); ?></span><span class="stat-description">Visible to student portal</span></div></div>
-<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-percent"></i></div><div class="stat-content"><span class="stat-label">Latest Percentage</span><span class="stat-value"><?php echo $latest ? number_format((float) $latest['percentage'], 1) . '%' : '-'; ?></span><span class="stat-description"><?php echo e($latest['grade'] ?? 'No grade yet'); ?></span></div></div>
+<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-percent"></i></div><div class="stat-content"><span class="stat-label">Latest Percentage</span><span class="stat-value"><?php echo $latest ? number_format((float) $latest['percentage'], 2) . '%' : '-'; ?></span><span class="stat-description"><?php echo e($latest['grade'] ?? 'No grade yet'); ?></span></div></div>
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div><div class="stat-content"><span class="stat-label">Trend Points</span><span class="stat-value"><?php echo number_format(count($trend['values'])); ?></span><span class="stat-description">Published exams plotted</span></div></div>
 </section>
 
@@ -81,7 +82,7 @@ function result_date($value, $fallback): string
 <td><?php echo result_date($row['exam_date'] ?? null, $row['academic_year'] ?? ''); ?></td>
 <td><?php echo e($row['subject_name'] ?? '-'); ?></td>
 <td><?php echo e($row['marks_obtained'] ?? '0'); ?>/<?php echo e($row['max_marks'] ?? '-'); ?></td>
-<td><?php echo number_format((float) ($row['percentage'] ?? 0), 1); ?>%</td>
+<td><?php echo number_format((float) ($row['percentage'] ?? 0), 2); ?>%</td>
 <td><?php echo e($row['grade'] ?? '-'); ?></td>
 <td><?php echo e($row['remarks'] ?? '-'); ?></td>
 </tr>

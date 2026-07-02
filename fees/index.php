@@ -241,6 +241,15 @@ WHERE balance_amount > 0"
 
 <meta charset="UTF-8">
 
+<script>
+(function(){
+    if(localStorage.getItem("mindmerge-theme") === "dark"){
+        document.documentElement.classList.add("dark-mode");
+    }
+})();
+</script>
+
+
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0">
@@ -264,6 +273,8 @@ href="../assets/css/components.css">
 <link
 rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="../assets/css/material-theme.css">
 
 </head>
 
@@ -384,75 +395,59 @@ echo "Cannot delete fee structure because it has already been assigned to studen
 
 <!-- Statistics -->
 
+<!-- Statistics -->
+
 <div class="dashboard-grid">
 
-<div class="dashboard-card">
+    <div class="dashboard-card">
+        <div>
+            <h3>Fee Structures</h3>
+            <h2><?php echo $total_structures; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+    </div>
 
-<h3>
-Fee Structures
-</h3>
+    <div class="dashboard-card">
+        <div>
+            <h3>Pending Students</h3>
+            <h2><?php echo $total_unpaid_students; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-user-clock"></i>
+        </div>
+    </div>
 
-<h2>
+    <div class="dashboard-card">
+        <div>
+            <h3>Assigned Fees</h3>
+            <h2><?php echo $total_assigned_fees; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-users"></i>
+        </div>
+    </div>
 
-<?php echo $total_structures; ?>
+    <div class="dashboard-card">
+        <div>
+            <h3>Collected Amount</h3>
+            <h2>₹<?php echo number_format($total_collected,2); ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+    </div>
 
-</h2>
-
-</div>
-<div class="dashboard-card">
-
-<h3>
-Pending Students
-</h3>
-
-<h2>
-
-<?php echo $total_unpaid_students; ?>
-
-</h2>
-
-</div>
-<div class="dashboard-card">
-
-<h3>
-Assigned Fees
-</h3>
-
-<h2>
-
-<?php echo $total_assigned_fees; ?>
-
-</h2>
-
-</div>
-
-<div class="dashboard-card">
-
-<h3>
-Collected Amount
-</h3>
-
-<h2>
-
-₹<?php echo number_format($total_collected,2); ?>
-
-</h2>
-
-</div>
-
-<div class="dashboard-card">
-
-<h3>
-Pending Amount
-</h3>
-
-<h2>
-
-₹<?php echo number_format($total_pending,2); ?>
-
-</h2>
-
-</div>
+    <div class="dashboard-card">
+        <div>
+            <h3>Pending Amount</h3>
+            <h2>₹<?php echo number_format($total_pending,2); ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-wallet"></i>
+        </div>
+    </div>
 
 </div>
 

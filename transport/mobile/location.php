@@ -31,6 +31,7 @@ function e($value): string
 <link rel="stylesheet" href="../../assets/css/dashboard-components.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 <style>
 .tracking-shell{display:flex;flex-direction:column;gap:20px;max-width:1100px;margin:0 auto;}
 .tracking-map{height:560px;min-height:360px;width:100%;border-radius:16px;overflow:hidden;border:1px solid var(--border-color);}

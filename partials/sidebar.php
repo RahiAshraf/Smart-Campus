@@ -66,7 +66,18 @@ function sidebar_resolve_url(array $config, string $role, string $module_key = '
 
 <?php foreach ($group['items'] as $module_key => $config) {
     $is_active = permission_menu_is_active($config, $current_page, $uri,$module_key);
+
+    /* Fix: teacher-attendance also contains attendance */
+        if ($module_key === 'attendance' && strpos($uri, '/teacher-attendance/') !== false) {
+            $is_active = false;
+        }
+
+        if ($module_key === 'teacher_attendance' && strpos($uri, '/teacher-attendance/') !== false) {
+            $is_active = true;
+        }
+
     $href = sidebar_resolve_url($config, $role, $module_key);
+
 ?>
 <li>
 

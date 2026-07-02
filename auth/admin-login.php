@@ -32,10 +32,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Login | MindMerge SmartCampus</title>
+
+<script>
+if(localStorage.getItem("mindmerge-theme") === "dark"){
+    document.documentElement.classList.add("dark-mode");
+}
+</script>
 <link rel="stylesheet" href="../assets/css/global.css">
 <link rel="stylesheet" href="../assets/css/components.css">
 <link rel="stylesheet" href="../assets/css/auth.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="assets/css/material-theme.css">
+
 </head>
 <body class="auth-v2 auth-admin">
 <main class="auth-shell auth-compact">

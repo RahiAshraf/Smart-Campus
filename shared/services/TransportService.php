@@ -328,7 +328,7 @@ class TransportService
         while ($query && $row = mysqli_fetch_assoc($query)) {
             $labels[] = $row['bus_number'];
             $capacity = max(1, (int) $row['capacity']);
-            $values[] = round(((int) $row['assigned'] / $capacity) * 100, 1);
+            $values[] = round(((int) $row['assigned'] / $capacity) * 100, 2);
         }
 
         return ['labels' => $labels, 'values' => $values];
@@ -920,7 +920,7 @@ class TransportService
 
         while ($query && $row = mysqli_fetch_assoc($query)) {
             $capacity = max(1, (int) $row['capacity']);
-            $row['usage_percent'] = round(((int) $row['assigned_students'] / $capacity) * 100, 1) . '%';
+            $row['usage_percent'] = round(((int) $row['assigned_students'] / $capacity) * 100, 2) . '%';
             $rows[] = $row;
         }
 

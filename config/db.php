@@ -7,7 +7,7 @@ if (isset($conn) && $conn instanceof mysqli) {
 $host = "localhost";
 $user = "root";
 $password = "";
-$database = "mindmerge";
+$database = "MindMerge_db";
 
 $conn = mysqli_connect(
 $host,

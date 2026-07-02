@@ -35,6 +35,7 @@ if ($valid) {
 <link rel="stylesheet" href="../assets/css/global.css">
 <link rel="stylesheet" href="../assets/css/components.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 <style>
 .verify-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
 .verify-card{max-width:480px;width:100%;background:var(--card);border-radius:18px;padding:30px;box-shadow:var(--shadow);text-align:center;border:1px solid rgba(148,163,184,.15);}

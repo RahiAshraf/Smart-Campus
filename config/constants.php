@@ -3,5 +3,5 @@
 
 define(
 'BASE_URL',
-'/MindMerge SmartCampus/'
+'/SmartCampus/'
 );

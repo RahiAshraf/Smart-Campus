@@ -44,6 +44,16 @@ $statusClass = $status === 'running' ? 'badge-success' : ($status === 'completed
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
+<script>
+(function(){
+    if(localStorage.getItem("mindmerge-theme") === "dark"){
+        document.documentElement.classList.add("dark-mode");
+    }
+})();
+</script>
+
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Driver Dashboard | MindMerge</title>
 <link rel="stylesheet" href="../../assets/css/global.css">
@@ -52,6 +62,8 @@ $statusClass = $status === 'running' ? 'badge-success' : ($status === 'completed
 <link rel="stylesheet" href="../../assets/css/dashboard-components.css">
 <link rel="stylesheet" href="../../assets/css/portals.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/material-theme.css">
+
 </head>
 <body>
 <div class="app-layout">

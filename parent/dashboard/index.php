@@ -3,10 +3,12 @@
 require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../config/permissions.php';
+require_once __DIR__ . '/../../config/finance.php';
 require_once __DIR__ . '/../../shared/services/ParentDashboardService.php';
 require_once __DIR__ . '/../../shared/helpers/portal.php';
 
 portal_require_role(['parent']);
+finance_ensure_tables($conn);
 
 $service = new ParentDashboardService($conn, (int) $_SESSION['user']['id']);
 $allChildren = $service->getChildren();
@@ -26,6 +28,8 @@ $stats = $service->getStats();
 $insights = $service->getInsights();
 $children = $service->getChildrenOverview();
 $fees = $service->getFeeSummary();
+$feeDetails = $service->getFeeDetails();
+$feePayments = $service->getRecentFeePayments();
 $attendanceTrend = $service->getAttendanceTrend();
 $performanceTrend = $service->getPerformanceTrend();
 $upcomingExams = $service->getUpcomingExams();
@@ -42,7 +46,7 @@ function e($value): string
 
 function money($value): string
 {
-    return 'INR ' . number_format((float) $value, 2);
+    return finance_money($value);
 }
 
 function short_date($value): string
@@ -55,7 +59,7 @@ function short_time($value): string
     return $value ? date('g:i A', strtotime($value)) : 'All day';
 }
 
-$feePaidPct = $fees['assigned'] > 0 ? round(($fees['paid'] / $fees['assigned']) * 100, 1) : 0;
+$feePaidPct = $fees['assigned'] > 0 ? round(($fees['paid'] / $fees['assigned']) * 100, 2) : 0;
 
 ?>
 <!DOCTYPE html>
@@ -70,6 +74,7 @@ $feePaidPct = $fees['assigned'] > 0 ? round(($fees['paid'] / $fees['assigned']) 
 <link rel="stylesheet" href="../../assets/css/dashboard-components.css">
 <link rel="stylesheet" href="../../assets/css/portals.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 </head>
 <body>
 <div class="app-layout">
@@ -86,7 +91,7 @@ $feePaidPct = $fees['assigned'] > 0 ? round(($fees['paid'] / $fees['assigned']) 
 <p class="hero-description">Welcome, <strong><?php echo e($user_name); ?></strong>. Follow your children's attendance, fees, results, notices, transport, and school communications.</p>
 <div class="hero-meta">
 <span class="hero-badge"><i class="fa-solid fa-children"></i><?php echo number_format($stats['children_count']); ?> children</span>
-<span class="hero-badge"><i class="fa-solid fa-calendar-check"></i><?php echo number_format($stats['average_attendance'], 1); ?>% attendance</span>
+<span class="hero-badge"><i class="fa-solid fa-calendar-check"></i><?php echo number_format($stats['average_attendance'], 2); ?>% attendance</span>
 <span class="hero-badge"><i class="fa-solid fa-wallet"></i><?php echo money($stats['fee_balance']); ?> balance</span>
 </div>
 </div>
@@ -116,8 +121,8 @@ $feePaidPct = $fees['assigned'] > 0 ? round(($fees['paid'] / $fees['assigned']) 
 
 <section class="stats-grid">
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-children"></i></div><div class="stat-content"><span class="stat-label">Children</span><span class="stat-value"><?php echo number_format($stats['children_count']); ?></span><span class="stat-description">Linked student profiles</span></div></div>
-<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div><div class="stat-content"><span class="stat-label">Avg Attendance</span><span class="stat-value"><?php echo number_format($stats['average_attendance'], 1); ?>%</span><span class="stat-description">Across all children</span></div></div>
-<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div><div class="stat-content"><span class="stat-label">Avg Performance</span><span class="stat-value"><?php echo number_format($stats['average_performance'], 1); ?>%</span><span class="stat-description">Published results</span></div></div>
+<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div><div class="stat-content"><span class="stat-label">Avg Attendance</span><span class="stat-value"><?php echo number_format($stats['average_attendance'], 2); ?>%</span><span class="stat-description">Across all children</span></div></div>
+<div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div><div class="stat-content"><span class="stat-label">Avg Performance</span><span class="stat-value"><?php echo number_format($stats['average_performance'], 2); ?>%</span><span class="stat-description">Published results</span></div></div>
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div><div class="stat-content"><span class="stat-label">Upcoming Exams</span><span class="stat-value"><?php echo number_format($stats['upcoming_exams']); ?></span><span class="stat-description">For linked classes</span></div></div>
 <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-bell"></i></div><div class="stat-content"><span class="stat-label">Notifications</span><span class="stat-value"><?php echo number_format($stats['unread_notifications']); ?></span><span class="stat-description">Unread alerts</span></div></div>
 </section>
@@ -141,7 +146,7 @@ $feePaidPct = $fees['assigned'] > 0 ? round(($fees['paid'] / $fees['assigned']) 
 <div class="dashboard-widget-body dashboard-table-wrap">
 <table class="dashboard-table"><thead><tr><th>Child</th><th>Class</th><th>Attendance</th><th>Fee Balance</th><th>Latest Result</th></tr></thead><tbody>
 <?php if (empty($children)) { ?><tr><td colspan="5">No linked children found.</td></tr><?php } ?>
-<?php foreach ($children as $item) { $child = $item['student']; ?><tr><td><strong><?php echo e($child['full_name']); ?></strong><br><span><?php echo e($child['student_id']); ?></span></td><td><?php echo e($child['class_name'] . ' ' . $child['section_name']); ?></td><td><?php echo number_format($item['attendance'], 1); ?>%</td><td><?php echo money($item['fee_balance']); ?></td><td><?php echo $item['performance'] !== null ? number_format($item['performance'], 1) . '% - ' . e($item['latest_exam']) : '-'; ?></td></tr><?php } ?>
+<?php foreach ($children as $item) { $child = $item['student']; ?><tr><td><strong><?php echo e($child['full_name']); ?></strong><br><span><?php echo e($child['student_id']); ?></span></td><td><?php echo e($child['class_name'] . ' ' . $child['section_name']); ?></td><td><?php echo number_format($item['attendance'], 2); ?>%</td><td><?php echo money($item['fee_balance']); ?></td><td><?php echo $item['performance'] !== null ? number_format($item['performance'], 2) . '% - ' . e($item['latest_exam']) : '-'; ?></td></tr><?php } ?>
 </tbody></table>
 </div>
 </section>
@@ -154,14 +159,35 @@ $feePaidPct = $fees['assigned'] > 0 ? round(($fees['paid'] / $fees['assigned']) 
 <section class="dashboard-grid-3">
 <div class="info-panel">
 <h3 class="info-panel-title"><i class="fa-solid fa-wallet"></i>Fees</h3>
-<div class="progress-group"><div class="progress-item"><div class="progress-header"><span class="progress-title">Paid</span><span class="progress-value"><?php echo number_format($feePaidPct, 1); ?>%</span></div><div class="progress"><span class="progress-bar progress-success" style="width:<?php echo min(100, $feePaidPct); ?>%"></span></div></div></div>
+<div class="progress-group"><div class="progress-item"><div class="progress-header"><span class="progress-title">Paid</span><span class="progress-value"><?php echo number_format($feePaidPct, 2); ?>%</span></div><div class="progress"><span class="progress-bar progress-success" style="width:<?php echo min(100, $feePaidPct); ?>%"></span></div></div></div>
 <div class="info-list" style="margin-top:18px;"><div class="info-list-item"><span>Assigned</span><strong><?php echo money($fees['assigned']); ?></strong></div><div class="info-list-item"><span>Paid</span><strong><?php echo money($fees['paid']); ?></strong></div><div class="info-list-item"><span>Balance</span><strong><?php echo money($fees['balance']); ?></strong></div></div>
 </div>
 <div class="info-panel">
 <h3 class="info-panel-title"><i class="fa-solid fa-triangle-exclamation"></i>Attendance Alerts</h3>
 <div class="info-list">
 <?php if (empty($insights['attendance_alerts'])) { ?><div class="info-list-item"><span>All children meet attendance thresholds</span><strong>Good</strong></div><?php } ?>
-<?php foreach ($insights['attendance_alerts'] as $alert) { ?><div class="info-list-item"><span><?php echo e($alert['name']); ?></span><strong><?php echo number_format($alert['rate'], 1); ?>%</strong></div><?php } ?>
+<?php foreach ($insights['attendance_alerts'] as $alert) { ?><div class="info-list-item"><span><?php echo e($alert['name']); ?></span><strong><?php echo number_format($alert['rate'], 2); ?>%</strong></div><?php } ?>
+</div>
+</div>
+</section>
+
+<section class="dashboard-grid-equal">
+<div class="dashboard-widget">
+<div class="dashboard-widget-header"><div class="dashboard-widget-title"><i class="fa-solid fa-file-invoice-dollar"></i><div><h4>Fee Details</h4><span>Children's assigned fees</span></div></div></div>
+<div class="dashboard-widget-body dashboard-table-wrap">
+<table class="dashboard-table"><thead><tr><th>Child</th><th>Fee</th><th>Balance</th><th>Status</th></tr></thead><tbody>
+<?php if (empty($feeDetails)) { ?><tr><td colspan="4">No fees assigned.</td></tr><?php } ?>
+<?php foreach ($feeDetails as $fee) { ?><tr><td><?php echo e($fee['full_name']); ?></td><td><strong><?php echo e($fee['fee_name']); ?></strong><br><span>Due <?php echo short_date($fee['due_date']); ?></span></td><td><?php echo money($fee['balance_amount']); ?><br><span>Paid <?php echo money($fee['paid_amount']); ?></span></td><td><span class="dashboard-badge <?php echo $fee['payment_status'] === 'paid' ? 'badge-success' : ($fee['payment_status'] === 'partial' ? 'badge-warning' : 'badge-danger'); ?>"><?php echo e(ucfirst($fee['payment_status'])); ?></span></td></tr><?php } ?>
+</tbody></table>
+</div>
+</div>
+<div class="dashboard-widget">
+<div class="dashboard-widget-header"><div class="dashboard-widget-title"><i class="fa-solid fa-receipt"></i><div><h4>Fee Payments</h4><span>Recent receipts</span></div></div></div>
+<div class="dashboard-widget-body dashboard-table-wrap">
+<table class="dashboard-table"><thead><tr><th>Receipt</th><th>Child</th><th>Amount</th></tr></thead><tbody>
+<?php if (empty($feePayments)) { ?><tr><td colspan="3">No fee payments yet.</td></tr><?php } ?>
+<?php foreach ($feePayments as $payment) { ?><tr><td><strong><?php echo e($payment['receipt_no']); ?></strong><br><span><?php echo short_date($payment['payment_date']); ?></span></td><td><?php echo e($payment['full_name']); ?><br><span><?php echo e($payment['fee_name']); ?></span></td><td><?php echo money($payment['amount_paid']); ?></td></tr><?php } ?>
+</tbody></table>
 </div>
 </div>
 </section>
@@ -172,7 +198,7 @@ $feePaidPct = $fees['assigned'] > 0 ? round(($fees['paid'] / $fees['assigned']) 
 <div class="dashboard-widget-body dashboard-table-wrap">
 <table class="dashboard-table"><thead><tr><th>Child</th><th>Exam</th><th>Score</th></tr></thead><tbody>
 <?php if (empty($recentResults)) { ?><tr><td colspan="3">No results yet.</td></tr><?php } ?>
-<?php foreach ($recentResults as $result) { $pct = ((float) $result['total_marks'] > 0) ? round(((float) $result['marks_obtained'] / (float) $result['total_marks']) * 100, 1) : 0; ?><tr><td><?php echo e($result['full_name']); ?></td><td><?php echo e($result['exam_name']); ?><br><span><?php echo short_date($result['exam_date']); ?></span></td><td><?php echo number_format($pct, 1); ?>%</td></tr><?php } ?>
+<?php foreach ($recentResults as $result) { $pct = ((float) $result['total_marks'] > 0) ? round(((float) $result['marks_obtained'] / (float) $result['total_marks']) * 100, 2) : 0; ?><tr><td><?php echo e($result['full_name']); ?></td><td><?php echo e($result['exam_name']); ?><br><span><?php echo short_date($result['exam_date']); ?></span></td><td><?php echo number_format($pct, 2); ?>%</td></tr><?php } ?>
 </tbody></table>
 </div>
 </div>

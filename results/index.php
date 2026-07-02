@@ -153,6 +153,17 @@ FROM result_marks"
 
 <meta charset="UTF-8">
 
+
+<script>
+(function(){
+    if(localStorage.getItem("mindmerge-theme") === "dark"){
+        document.documentElement.classList.add("dark-mode");
+    }
+})();
+</script>
+
+
+
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0">
@@ -177,6 +188,7 @@ href="../assets/css/components.css">
 rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+<link rel="stylesheet" href="../assets/css/material-theme.css">
 </head>
 
 <body>
@@ -287,66 +299,49 @@ echo "Cannot publish result because no marks have been entered.";
 </div>
 
 <?php } ?>
-
 <!-- Statistics -->
 
 <div class="dashboard-grid">
 
-<div class="dashboard-card">
+    <div class="dashboard-card">
+        <div>
+            <h3>Total Results</h3>
+            <h2><?php echo $total_results; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+        </div>
+    </div>
 
-<h3>
-Total Results
-</h3>
+    <div class="dashboard-card">
+        <div>
+            <h3>Draft Results</h3>
+            <h2><?php echo $draft_results; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-file-pen"></i>
+        </div>
+    </div>
 
-<h2>
+    <div class="dashboard-card">
+        <div>
+            <h3>Published Results</h3>
+            <h2><?php echo $published_results; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+    </div>
 
-<?php echo $total_results; ?>
-
-</h2>
-
-</div>
-
-<div class="dashboard-card">
-
-<h3>
-Draft Results
-</h3>
-
-<h2>
-
-<?php echo $draft_results; ?>
-
-</h2>
-
-</div>
-
-<div class="dashboard-card">
-
-<h3>
-Published Results
-</h3>
-
-<h2>
-
-<?php echo $published_results; ?>
-
-</h2>
-
-</div>
-
-<div class="dashboard-card">
-
-<h3>
-Marks Entries
-</h3>
-
-<h2>
-
-<?php echo $total_marks_entries; ?>
-
-</h2>
-
-</div>
+    <div class="dashboard-card">
+        <div>
+            <h3>Marks Entries</h3>
+            <h2><?php echo $total_marks_entries; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-clipboard-list"></i>
+        </div>
+    </div>
 
 </div>
 

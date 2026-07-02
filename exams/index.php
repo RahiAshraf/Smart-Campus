@@ -90,6 +90,15 @@ $completed_exams = $examStats['completed_exams'];
 
 <meta charset="UTF-8">
 
+<script>
+(function(){
+    if(localStorage.getItem("mindmerge-theme") === "dark"){
+        document.documentElement.classList.add("dark-mode");
+    }
+})();
+</script>
+
+
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0">
@@ -113,6 +122,8 @@ href="../assets/css/components.css">
 <link
 rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/material-dashboard.css">
+<link rel="stylesheet" href="../assets/css/material-theme.css">
 
 </head>
 
@@ -225,45 +236,45 @@ echo "Unable to delete exam.";
 
 <div class="dashboard-grid">
 
-<div class="dashboard-card">
+    <div class="dashboard-card">
+        <div>
+            <h3>Total Exams</h3>
+            <h2><?php echo $total_exams; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-file-lines"></i>
+        </div>
+    </div>
 
-<h3>Total Exams</h3>
+    <div class="dashboard-card">
+        <div>
+            <h3>Upcoming Exams</h3>
+            <h2><?php echo $upcoming_exams; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-calendar-days"></i>
+        </div>
+    </div>
 
-<h2>
-<?php echo $total_exams; ?>
-</h2>
+    <div class="dashboard-card">
+        <div>
+            <h3>Ongoing Exams</h3>
+            <h2><?php echo $ongoing_exams; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-hourglass-half"></i>
+        </div>
+    </div>
 
-</div>
-
-<div class="dashboard-card">
-
-<h3>Upcoming Exams</h3>
-
-<h2>
-<?php echo $upcoming_exams; ?>
-</h2>
-
-</div>
-
-<div class="dashboard-card">
-
-<h3>Ongoing Exams</h3>
-
-<h2>
-<?php echo $ongoing_exams; ?>
-</h2>
-
-</div>
-
-<div class="dashboard-card">
-
-<h3>Completed Exams</h3>
-
-<h2>
-<?php echo $completed_exams; ?>
-</h2>
-
-</div>
+    <div class="dashboard-card">
+        <div>
+            <h3>Completed Exams</h3>
+            <h2><?php echo $completed_exams; ?></h2>
+        </div>
+        <div class="card-icon">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+    </div>
 
 </div>
 

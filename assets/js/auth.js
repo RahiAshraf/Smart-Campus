@@ -18,3 +18,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const alert = document.querySelector(".auth-alert");
+
+    if(alert){
+
+        setTimeout(() => {
+
+            alert.style.opacity = "0";
+            alert.style.transform = "translateY(-10px)";
+
+        }, 1500);
+
+        setTimeout(() => {
+
+            alert.remove();
+
+        }, 1800);
+
+    }
+
+});

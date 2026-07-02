@@ -41,6 +41,7 @@ function result_date($value, $fallback): string
 <link rel="stylesheet" href="../../assets/css/layout.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 </head>
 <body>
 <div class="app-layout">
@@ -64,7 +65,7 @@ function result_date($value, $fallback): string
 <td><?php echo result_date($row['exam_date'] ?? null, $row['academic_year'] ?? ''); ?></td>
 <td><?php echo e($row['subject_name'] ?? '-'); ?></td>
 <td><?php echo e($row['marks_obtained'] ?? $row['total_marks'] ?? '0'); ?>/<?php echo e($row['max_marks'] ?? '-'); ?></td>
-<td><?php echo isset($row['percentage']) ? number_format((float) $row['percentage'], 1) . '%' : '-'; ?></td>
+<td><?php echo isset($row['percentage']) ? number_format((float) $row['percentage'], 2) . '%' : '-'; ?></td>
 <td><?php echo e($row['grade'] ?? '-'); ?></td>
 </tr>
 <?php } } ?>

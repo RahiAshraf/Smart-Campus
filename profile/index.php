@@ -463,6 +463,14 @@ $data['user']
 
 <meta charset="UTF-8">
 
+<script>
+(() => {
+    if (localStorage.getItem("mindmerge-theme") === "dark") {
+        document.documentElement.classList.add("dark-mode");
+    }
+})();
+</script>
+
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0">
@@ -470,6 +478,8 @@ content="width=device-width, initial-scale=1.0">
 <title>
 Profile | MindMerge SmartCampus
 </title>
+
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 
 <link
 rel="stylesheet"
@@ -487,9 +497,11 @@ href="../assets/css/components.css">
 rel="stylesheet"
 href="../assets/css/portals.css">
 
+
 <link
 rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
 
 <style>
 
@@ -510,7 +522,6 @@ align-items:start;
 
 .user-profile-card{
 background:var(--card);
-border-radius:24px;
 padding:30px;
 box-shadow:var(--shadow);
 text-align:center;
@@ -596,7 +607,6 @@ gap:24px;
 
 .profile-section{
 background:var(--card);
-border-radius:24px;
 padding:28px;
 box-shadow:var(--shadow);
 }
@@ -630,7 +640,6 @@ gap:16px;
 
 .profile-stat-card{
 background:var(--card);
-border-radius:18px;
 padding:22px;
 box-shadow:var(--shadow);
 }

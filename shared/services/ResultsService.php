@@ -431,7 +431,7 @@ class ResultsService
         while ($query && $row = mysqli_fetch_assoc($query)) {
             $total = (float) ($row['total_marks'] ?: 100);
             $labels[] = $row['exam_name'];
-            $values[] = $total > 0 ? round(((float) $row['marks_obtained'] / $total) * 100, 1) : 0;
+            $values[] = $total > 0 ? round(((float) $row['marks_obtained'] / $total) * 100, 2) : 0;
         }
 
         return ['labels' => $labels, 'values' => $values];

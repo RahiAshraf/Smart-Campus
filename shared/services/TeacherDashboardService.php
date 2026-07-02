@@ -159,7 +159,7 @@ class TeacherDashboardService
                  WHERE a.attendance_date = '$date' AND $scope"
             );
 
-            $values[] = $total > 0 ? round(($present / $total) * 100, 1) : 0;
+            $values[] = $total > 0 ? round(($present / $total) * 100, 2) : 0;
         }
 
         return ['labels' => $labels, 'values' => $values];
@@ -189,7 +189,7 @@ class TeacherDashboardService
         $total_pairs = count($pairs);
         $completed = $total_pairs - count($attention);
         $completion_pct = $total_pairs > 0
-            ? round(($completed / $total_pairs) * 100, 1)
+            ? round(($completed / $total_pairs) * 100, 2)
             : 0;
 
         return [
@@ -255,7 +255,7 @@ class TeacherDashboardService
             $total = (float) ($row['total_marks'] ?: 100);
             $avg = (float) ($row['average_marks'] ?? 0);
             $labels[] = $row['class_name'] . ' ' . $row['section_name'];
-            $values[] = $total > 0 ? round(($avg / $total) * 100, 1) : 0;
+            $values[] = $total > 0 ? round(($avg / $total) * 100, 2) : 0;
         }
 
         return ['labels' => $labels, 'values' => $values];
@@ -272,6 +272,51 @@ class TeacherDashboardService
         $context = notification_user_context($this->conn, $uid, $role);
 
         return notification_recent_for_context($this->conn, $context, $limit);
+    }
+
+    public function getSalarySummary(): array
+    {
+        $tid = $this->scope->getTeacherId();
+
+        if ($tid <= 0 || !$this->tablesExist(['teacher_salaries', 'salary_payments'])) {
+            return ['monthly_salary' => 0, 'status' => 'unassigned', 'paid_this_month' => 0, 'last_payment' => null];
+        }
+
+        $salary = mysqli_fetch_assoc(mysqli_query(
+            $this->conn,
+            "SELECT *
+             FROM teacher_salaries
+             WHERE teacher_id = '$tid'
+             ORDER BY status = 'active' DESC, effective_from DESC, salary_id DESC
+             LIMIT 1"
+        ));
+
+        if (!$salary) {
+            return ['monthly_salary' => 0, 'status' => 'unassigned', 'paid_this_month' => 0, 'last_payment' => null];
+        }
+
+        $salaryId = (int) $salary['salary_id'];
+        $paid = $this->scalarFloat(
+            "SELECT COALESCE(SUM(amount_paid),0)
+             FROM salary_payments
+             WHERE salary_id = '$salaryId'
+               AND pay_period = DATE_FORMAT(CURDATE(), '%Y-%m')"
+        );
+        $last = mysqli_fetch_assoc(mysqli_query(
+            $this->conn,
+            "SELECT *
+             FROM salary_payments
+             WHERE salary_id = '$salaryId'
+             ORDER BY payment_date DESC, payment_id DESC
+             LIMIT 1"
+        )) ?: null;
+
+        return [
+            'monthly_salary' => (float) $salary['monthly_salary'],
+            'status' => $salary['status'],
+            'paid_this_month' => $paid,
+            'last_payment' => $last,
+        ];
     }
 
     private function getTodayScheduleCount(): int
@@ -315,6 +360,19 @@ class TeacherDashboardService
         $row = mysqli_fetch_row($result);
 
         return (int) ($row[0] ?? 0);
+    }
+
+    private function scalarFloat(string $sql): float
+    {
+        $result = mysqli_query($this->conn, $sql);
+
+        if (!$result) {
+            return 0;
+        }
+
+        $row = mysqli_fetch_row($result);
+
+        return (float) ($row[0] ?? 0);
     }
 
     private function tableHasColumn(string $table, string $column): bool

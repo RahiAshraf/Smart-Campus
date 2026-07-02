@@ -3,16 +3,19 @@
 require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../config/permissions.php';
+require_once __DIR__ . '/../../config/finance.php';
 require_once __DIR__ . '/../../shared/services/AdminDashboardService.php';
 require_once __DIR__ . '/../../shared/helpers/portal.php';
 
 portal_require_role(['admin']);
+finance_ensure_tables($conn);
 
 $service = new AdminDashboardService($conn);
 $stats = $service->getStats();
 $insights = $service->getInsights();
 $institution = $service->getInstitutionOverview();
 $finance = $service->getFinanceOverview();
+$salary = $service->getSalaryOverview();
 $exams = $service->getExamOverview();
 $transport = $service->getTransportOverview();
 $alerts = $service->getDashboardAlerts();
@@ -25,6 +28,7 @@ $financeTrend = $service->getFinanceCollectionTrend();
 $examTrend = $service->getExamPerformanceTrend();
 $recentAdmissions = $service->getRecentAdmissions();
 $recentPayments = $service->getRecentPayments();
+$recentSalaryPayments = $service->getRecentSalaryPayments();
 $recentResults = $service->getRecentResults();
 $recentNotifications = $service->getRecentNotifications();
 $upcomingEvents = $service->getUpcomingEvents();
@@ -37,12 +41,12 @@ function e($value): string
 
 function money($value): string
 {
-    return 'INR ' . number_format((float) $value, 2);
+    return finance_money($value);
 }
 
 function pct($value): string
 {
-    return number_format((float) $value, 1) . '%';
+    return number_format((float) $value, 2) . '%';
 }
 
 function short_date($value): string
@@ -56,10 +60,10 @@ function short_time($value): string
 }
 
 $collectionRate = $finance['total_assigned'] > 0
-    ? round(($finance['total_collected'] / $finance['total_assigned']) * 100, 1)
+    ? round(($finance['total_collected'] / $finance['total_assigned']) * 100, 2)
     : 0;
 $transportCoverage = $stats['total_students'] > 0
-    ? round(($transport['assigned_students'] / $stats['total_students']) * 100, 1)
+    ? round(($transport['assigned_students'] / $stats['total_students']) * 100, 2)
     : 0;
 
 ?>
@@ -67,6 +71,17 @@ $transportCoverage = $stats['total_students'] > 0
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
+
+<script>
+(() => {
+    if (localStorage.getItem("mindmerge-theme") === "dark") {
+        document.documentElement.classList.add("dark-mode");
+    }
+})();
+</script>
+
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard | MindMerge SmartCampus</title>
 <link rel="stylesheet" href="../../assets/css/global.css">
@@ -75,6 +90,8 @@ $transportCoverage = $stats['total_students'] > 0
 <link rel="stylesheet" href="../../assets/css/dashboard-components.css">
 <link rel="stylesheet" href="../../assets/css/portals.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/material-theme.css">
+
 </head>
 <body>
 <div class="app-layout">
@@ -123,6 +140,14 @@ $transportCoverage = $stats['total_students'] > 0
 <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
 <div class="stat-content"><span class="stat-label">Fee Pending</span><span class="stat-value"><?php echo money($stats['fee_pending']); ?></span><span class="stat-description"><?php echo pct($collectionRate); ?> collected</span></div>
 </div>
+<div class="stat-card">
+<div class="stat-icon"><i class="fa-solid fa-user-tie"></i></div>
+<div class="stat-content"><span class="stat-label">Active Payroll</span><span class="stat-value"><?php echo money($salary['active_payroll']); ?></span><span class="stat-description"><?php echo number_format($salary['active_records']); ?> active salaries</span></div>
+</div>
+<div class="stat-card">
+<div class="stat-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+<div class="stat-content"><span class="stat-label">Billing Net</span><span class="stat-value"><?php echo money($finance['net_balance']); ?></span><span class="stat-description">Fees minus salaries</span></div>
+</div>
 </section>
 
 <section class="dashboard-section">
@@ -135,7 +160,10 @@ $transportCoverage = $stats['total_students'] > 0
 <?php if (canCreate('students')) { ?><a href="../../students/add.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-user-plus"></i></span><span class="quick-action-title">Add Student</span><span class="quick-action-desc">Register admission</span></a><?php } ?>
 <?php if (canEdit('students')) { ?><a href="../../students/assign-parent.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-people-roof"></i></span><span class="quick-action-title">Assign Parent</span><span class="quick-action-desc">Link family account</span></a><?php } ?>
 <?php if (canCreate('teachers')) { ?><a href="../../teachers/add.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-user-tie"></i></span><span class="quick-action-title">Add Teacher</span><span class="quick-action-desc">Create staff profile</span></a><?php } ?>
+<?php if (canCreate('fees')) { ?><a href="../../fees/add.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-money-bill-wave"></i></span><span class="quick-action-title">Add Fee</span><span class="quick-action-desc">Create fee structure</span></a><?php } ?>
 <?php if (canEdit('fees')) { ?><a href="../../fees/collect.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-receipt"></i></span><span class="quick-action-title">Collect Fees</span><span class="quick-action-desc">Post payment</span></a><?php } ?>
+<?php if (canCreate('salaries')) { ?><a href="../../salaries/add.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-hand-holding-dollar"></i></span><span class="quick-action-title">Add Salary</span><span class="quick-action-desc">Set teacher payroll</span></a><?php } ?>
+<?php if (canView('billing')) { ?><a href="../../billing/index.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-chart-line"></i></span><span class="quick-action-title">Billing</span><span class="quick-action-desc">Income and expense</span></a><?php } ?>
 <?php if (canCreate('timetables')) { ?><a href="../../timetables/add.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-calendar-days"></i></span><span class="quick-action-title">Create Timetable</span><span class="quick-action-desc">Build schedule</span></a><?php } ?>
 <?php if (canCreate('notifications')) { ?><a href="../../notifications/create.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-bell"></i></span><span class="quick-action-title">Send Notice</span><span class="quick-action-desc">Broadcast update</span></a><?php } ?>
 <?php if (canCreate('exams')) { ?><a href="../../exams/add.php" class="quick-action-card"><span class="quick-action-icon"><i class="fa-solid fa-file-lines"></i></span><span class="quick-action-title">Add Exam</span><span class="quick-action-desc">Schedule assessment</span></a><?php } ?>
@@ -147,6 +175,8 @@ $transportCoverage = $stats['total_students'] > 0
 
 <section class="analytics-grid">
 <div class="analytics-card"><div class="analytics-header"><div><p class="analytics-title">Finance Collection</p><div class="analytics-value"><?php echo pct($collectionRate); ?></div><div class="analytics-subtitle"><?php echo money($finance['total_collected']); ?> collected of <?php echo money($finance['total_assigned']); ?></div></div><div class="analytics-icon"><i class="fa-solid fa-chart-pie"></i></div></div><div class="analytics-footer"><span class="analytics-trend up"><i class="fa-solid fa-indian-rupee-sign"></i><?php echo money($finance['today_collection']); ?> today</span><span><?php echo number_format($finance['pending_students']); ?> pending</span></div></div>
+<div class="analytics-card"><div class="analytics-header"><div><p class="analytics-title">Salary Payroll</p><div class="analytics-value"><?php echo money($salary['paid_this_month']); ?></div><div class="analytics-subtitle"><?php echo money($salary['active_payroll']); ?> active monthly payroll</div></div><div class="analytics-icon"><i class="fa-solid fa-user-tie"></i></div></div><div class="analytics-footer"><span class="analytics-trend flat"><i class="fa-solid fa-receipt"></i><?php echo money($salary['total_paid']); ?> total paid</span><span>Salary expense</span></div></div>
+<div class="analytics-card"><div class="analytics-header"><div><p class="analytics-title">Billing Balance</p><div class="analytics-value"><?php echo money($finance['net_balance']); ?></div><div class="analytics-subtitle"><?php echo money($finance['total_collected']); ?> in, <?php echo money($finance['salary_expense']); ?> out</div></div><div class="analytics-icon"><i class="fa-solid fa-scale-balanced"></i></div></div><div class="analytics-footer"><span class="analytics-trend <?php echo $finance['net_balance'] >= 0 ? 'up' : 'down'; ?>"><i class="fa-solid fa-chart-line"></i>Net position</span><span>Billing stats</span></div></div>
 <div class="analytics-card"><div class="analytics-header"><div><p class="analytics-title">Exam Pipeline</p><div class="analytics-value"><?php echo number_format($exams['total_exams']); ?></div><div class="analytics-subtitle"><?php echo number_format($exams['published_results']); ?> published results, <?php echo number_format($exams['draft_results']); ?> drafts</div></div><div class="analytics-icon"><i class="fa-solid fa-clipboard-check"></i></div></div><div class="analytics-footer"><span class="analytics-trend flat"><i class="fa-solid fa-clock"></i><?php echo number_format($exams['upcoming_exams']); ?> upcoming</span><span>Assessment status</span></div></div>
 <div class="analytics-card"><div class="analytics-header"><div><p class="analytics-title">Transport Coverage</p><div class="analytics-value"><?php echo pct($transportCoverage); ?></div><div class="analytics-subtitle"><?php echo number_format($transport['routes']); ?> routes, <?php echo number_format($transport['drivers']); ?> drivers</div></div><div class="analytics-icon"><i class="fa-solid fa-location-dot"></i></div></div><div class="analytics-footer"><span class="analytics-trend up"><i class="fa-solid fa-bus-simple"></i><?php echo number_format($transport['buses']); ?> buses</span><span><?php echo number_format($transport['assigned_students']); ?> riders</span></div></div>
 </section>
@@ -218,6 +248,15 @@ $transportCoverage = $stats['total_students'] > 0
 </div>
 </div>
 <div class="dashboard-widget">
+<div class="dashboard-widget-header"><div class="dashboard-widget-title"><i class="fa-solid fa-money-check-dollar"></i><div><h4>Salary Payments</h4><span>Latest payroll transactions</span></div></div></div>
+<div class="dashboard-widget-body dashboard-table-wrap">
+<table class="dashboard-table"><thead><tr><th>Receipt</th><th>Teacher</th><th>Amount</th></tr></thead><tbody>
+<?php if (empty($recentSalaryPayments)) { ?><tr><td colspan="3">No salary payments yet.</td></tr><?php } ?>
+<?php foreach ($recentSalaryPayments as $item) { ?><tr><td><strong><?php echo e($item['receipt_no']); ?></strong><br><span><?php echo short_date($item['payment_date']); ?> · <?php echo e($item['pay_period']); ?></span></td><td><?php echo e($item['full_name']); ?></td><td><?php echo money($item['amount_paid']); ?></td></tr><?php } ?>
+</tbody></table>
+</div>
+</div>
+<div class="dashboard-widget">
 <div class="dashboard-widget-header"><div class="dashboard-widget-title"><i class="fa-solid fa-square-poll-vertical"></i><div><h4>Recent Results</h4><span>Exam publication activity</span></div></div></div>
 <div class="dashboard-widget-body dashboard-table-wrap">
 <table class="dashboard-table"><thead><tr><th>Exam</th><th>Class</th><th>Status</th></tr></thead><tbody>
@@ -235,9 +274,59 @@ $transportCoverage = $stats['total_students'] > 0
 <div class="notification-list">
 <?php if (empty($recentNotifications)) { ?><div class="dashboard-empty"><i class="fa-solid fa-bell-slash"></i><p>No notifications available.</p></div><?php } ?>
 <?php foreach ($recentNotifications as $n) { ?>
+
+
+<?php
+$icon = 'fa-bullhorn';
+$color = '#3b82f6';
+
+switch($n['notification_type']){
+    case 'announcement':
+        $icon = 'fa-bullhorn';
+        $color = '#7c3aed';
+        break;
+
+    case 'exam':
+        $icon = 'fa-file-lines';
+        $color = '#ef4444';
+        break;
+
+    case 'attendance':
+        $icon = 'fa-calendar-check';
+        $color = '#06b6d4';
+        break;
+
+    case 'result':
+        $icon = 'fa-square-poll-vertical';
+        $color = '#10b981';
+        break;
+
+    case 'fee':
+        $icon = 'fa-money-bill-wave';
+        $color = '#f59e0b';
+        break;
+
+    case 'transport':
+        $icon = 'fa-bus';
+        $color = '#ff5722';
+        break;
+}
+?>
 <div class="notification-item">
-<div class="notification-icon"><i class="fa-solid fa-bullhorn"></i></div>
-<div class="notification-content"><h4 class="notification-title"><?php echo e($n['title']); ?></h4><div class="notification-meta"><span><?php echo e(ucfirst($n['notification_type'] ?? 'general')); ?></span><span><?php echo short_date($n['created_at']); ?></span></div></div>
+
+
+    <div class="notification-icon" style="background:<?php echo $color; ?>;">
+    <i class="fa-solid <?php echo $icon; ?>"></i>
+</div>
+
+    <div class="notification-content">
+        <h4 class="notification-title"><?php echo e($n['title']); ?></h4>
+
+        <div class="notification-meta">
+            <span><?php echo e(ucfirst($n['notification_type'] ?? 'general')); ?></span>
+            <span><?php echo short_date($n['created_at']); ?></span>
+        </div>
+    </div>
 </div>
 <?php } ?>
 </div>

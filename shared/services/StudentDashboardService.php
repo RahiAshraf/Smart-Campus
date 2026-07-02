@@ -50,7 +50,7 @@ class StudentDashboardService
                 "SELECT COUNT(*) FROM attendance_records
                  WHERE student_id = '$sid'"
             );
-            $attendance_pct = $total > 0 ? round(($present / $total) * 100, 1) : 0;
+            $attendance_pct = $total > 0 ? round(($present / $total) * 100, 2) : 0;
         }
 
         $uid = (int) ($_SESSION['user']['id'] ?? 0);
@@ -239,6 +239,59 @@ class StudentDashboardService
         return ['assigned' => $assigned, 'paid' => $paid, 'balance' => $balance, 'status' => $status];
     }
 
+    public function getFeeDetails(int $limit = 6): array
+    {
+        $sid = $this->getStudentDbId();
+        $items = [];
+
+        if ($sid <= 0 || !$this->tablesExist(['student_fees', 'fee_structures'])) {
+            return $items;
+        }
+
+        $query = mysqli_query(
+            $this->conn,
+            "SELECT sf.*, fs.fee_name, fs.due_date, fs.academic_year
+             FROM student_fees sf
+             INNER JOIN fee_structures fs ON fs.fee_structure_id = sf.fee_structure_id
+             WHERE sf.student_id = '$sid'
+             ORDER BY fs.due_date ASC, sf.student_fee_id DESC
+             LIMIT $limit"
+        );
+
+        while ($query && $row = mysqli_fetch_assoc($query)) {
+            $items[] = $row;
+        }
+
+        return $items;
+    }
+
+    public function getRecentFeePayments(int $limit = 5): array
+    {
+        $sid = $this->getStudentDbId();
+        $items = [];
+
+        if ($sid <= 0 || !$this->tablesExist(['fee_payments', 'student_fees', 'fee_structures'])) {
+            return $items;
+        }
+
+        $query = mysqli_query(
+            $this->conn,
+            "SELECT fp.receipt_no, fp.amount_paid, fp.payment_date, fp.payment_method, fs.fee_name
+             FROM fee_payments fp
+             INNER JOIN student_fees sf ON sf.student_fee_id = fp.student_fee_id
+             INNER JOIN fee_structures fs ON fs.fee_structure_id = sf.fee_structure_id
+             WHERE sf.student_id = '$sid'
+             ORDER BY fp.payment_date DESC, fp.payment_id DESC
+             LIMIT $limit"
+        );
+
+        while ($query && $row = mysqli_fetch_assoc($query)) {
+            $items[] = $row;
+        }
+
+        return $items;
+    }
+
     public function getUpcomingExams(int $limit = 5): array
     {
         $class_id = (int) ($this->student['class_id'] ?? 0);
@@ -305,7 +358,7 @@ class StudentDashboardService
         while ($query && $row = mysqli_fetch_assoc($query)) {
             $total = (float) ($row['total_marks'] ?: 100);
             $labels[] = $row['exam_name'];
-            $values[] = $total > 0 ? round(((float) $row['marks_obtained'] / $total) * 100, 1) : 0;
+            $values[] = $total > 0 ? round(((float) $row['marks_obtained'] / $total) * 100, 2) : 0;
         }
 
         return ['labels' => $labels, 'values' => $values];

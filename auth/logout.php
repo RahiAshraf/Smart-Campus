@@ -1,13 +1,11 @@
 <?php
-
 session_start();
 
-session_destroy();
+unset($_SESSION['user']);
+unset($_SESSION['admin']);
 
-header(
-"Location: login.php?logout=success"
-);
+$_SESSION['logout_message'] = 'You have been signed out successfully.';
 
-exit();
-
+header("Location: login.php");
+exit;
 ?>

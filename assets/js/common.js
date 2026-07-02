@@ -88,16 +88,15 @@ localStorage.getItem(
 
 if(theme === "dark"){
 
-document.body.classList.add(
-"dark-mode"
-);
+document.body.classList.add("dark-mode");
+document.documentElement.classList.add("dark-mode");
 
 }
 else{
 
-document.body.classList.remove(
-"dark-mode"
-);
+document.body.classList.remove("dark-mode");
+document.documentElement.classList.remove("dark-mode");
+
 
 }
 
@@ -440,4 +439,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.35 });
 
     values.forEach(value => observer.observe(value));
+});
+
+/* ========================================
+   AUTO HIDE FLASH / LOGOUT MESSAGES
+======================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const flashMessages = document.querySelectorAll(
+        '.logout-message, .logout-alert, .auth-alert, .alert, .success-message'
+    );
+
+    flashMessages.forEach(message => {
+
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transform = 'translateY(-10px)';
+        }, 1800);
+
+        setTimeout(() => {
+            message.remove();
+        }, 2300);
+
+    });
+
 });

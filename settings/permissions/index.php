@@ -4,6 +4,7 @@ include('../../config/auth.php');
 include('../../config/db.php');
 
 requirePermission('permissions', 'view');
+permission_ensure_finance_permissions($conn);
 
 $page_title = 'Permission Management';
 $success = '';
@@ -54,6 +55,12 @@ while ($row = mysqli_fetch_assoc($users_query)) {
 
 $active_tab = ($_GET['tab'] ?? 'roles') === 'users' ? 'users' : 'roles';
 
+$finance_modules = [
+    'fees' => ['label' => 'Fees', 'icon' => 'fa-money-bill-wave'],
+    'salaries' => ['label' => 'Salaries', 'icon' => 'fa-user-tie'],
+    'billing' => ['label' => 'Billing', 'icon' => 'fa-chart-line'],
+];
+
 if (isset($_GET['saved'])) {
     $success = 'Permissions updated successfully.';
 }
@@ -69,6 +76,7 @@ if (isset($_GET['saved'])) {
 <link rel="stylesheet" href="../../assets/css/layout.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/material-theme.css">
 <style>
 .perm-role-picker{
 display:flex;
@@ -91,6 +99,73 @@ background:var(--primary);
 color:#fff;
 border-color:var(--primary);
 }
+
+.finance-perm-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:16px;
+margin-bottom:20px;
+}
+
+.finance-perm-card{
+background:var(--card);
+border:1px solid rgba(148,163,184,0.18);
+padding:18px;
+  border-radius:2px;
+    transition:.25s ease;
+
+box-shadow:var(--shadow);
+display:flex;
+gap:14px;
+align-items:center;
+}
+
+.finance-perm-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 16px 30px rgba(0,0,0,.14);
+}
+
+.finance-perm-icon{
+    width:60px;
+    height:60px;
+    min-width:60px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:2px;
+
+    background:#3b82f6;
+    color:#fff !important;
+
+    font-size:25px;
+
+    box-shadow:0 12px 24px rgba(0,0,0,.18);
+}
+
+.finance-perm-icon i{
+    color:#fff !important;
+    font-size:25px;
+}
+
+.finance-perm-card h3{
+margin:0 0 4px;
+font-size:16px;
+}
+
+.finance-perm-card p{
+margin:0;
+color:var(--muted);
+font-size:13px;
+}
+
+.finance-perm-card:nth-child(1) .finance-perm-icon{ background:#10b981; }
+.finance-perm-card:nth-child(2) .finance-perm-icon{ background:#ff5722; }
+.finance-perm-card:nth-child(3) .finance-perm-icon{ background:#7c3aed; }
+.finance-perm-card:nth-child(4) .finance-perm-icon{ background:#06b6d4; }
+.finance-perm-card:nth-child(5) .finance-perm-icon{ background:#f59e0b; }
+.finance-perm-card:nth-child(6) .finance-perm-icon{ background:#ef4444; }
+
 </style>
 </head>
 <body>
@@ -110,6 +185,30 @@ border-color:var(--primary);
 <h1>Permission Management</h1>
 <p>Control module visibility, role permissions, and user-specific overrides.</p>
 </div>
+</div>
+
+<div class="finance-perm-grid">
+<?php foreach ($finance_modules as $module_key => $module_meta) {
+    $grant_count = 0;
+    $total_count = 0;
+
+    if (isset($grouped_permissions[$module_key])) {
+        foreach ($grouped_permissions[$module_key]['permissions'] as $perm) {
+            $total_count++;
+            if (!empty($role_matrix[$selected_role][(int) $perm['permission_id']])) {
+                $grant_count++;
+            }
+        }
+    }
+?>
+<div class="finance-perm-card">
+<div class="finance-perm-icon"><i class="fa-solid <?php echo htmlspecialchars($module_meta['icon']); ?>"></i></div>
+<div>
+<h3><?php echo htmlspecialchars($module_meta['label']); ?></h3>
+<p><?php echo $active_tab === 'roles' ? (int) $grant_count . ' of ' . (int) $total_count . ' actions granted for ' . htmlspecialchars(ucfirst($selected_role)) : 'Finance access can be overridden per user.'; ?></p>
+</div>
+</div>
+<?php } ?>
 </div>
 
 <?php if ($success !== '') { ?>

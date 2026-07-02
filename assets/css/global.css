@@ -151,7 +151,7 @@ display:block;
 padding:24px;
 width:100%;
 max-width:1500px;
-margin:auto;
+margin-left:0px;
 }
 
 .text-primary{color:var(--primary);}
@@ -261,14 +261,24 @@ box-shadow:var(--shadow);
 
 .page-content{
 padding:22px;
+margin-left:2px;
 }
 
+}
+
+.auth-alert{
+    transition:
+        opacity .3s ease,
+        transform .3s ease;
 }
 
 @media(max-width:900px){
 
 .page-content{
+margin-left:2px;
 padding:18px;
+
+
 }
 
 h1{
