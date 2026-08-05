@@ -1705,6 +1705,7 @@ html.dark-mode .testimonial-info p{
     <!-- Notification Bar -->
     <div class="notification-bar">
         <div class="notification-content">
+<<<<<<< HEAD
            <div class="notification-item">
     <i class="fas fa-bullhorn"></i>
     <span>📢 Welcome to MindMerge SmartCampus ERP</span>
@@ -1764,6 +1765,40 @@ html.dark-mode .testimonial-info p{
     <i class="fas fa-brain"></i>
     <span>🤖 AI-Powered SmartCampus Experience</span>
 </div>
+=======
+            <div class="notification-item">
+                <i class="fas fa-bell"></i>
+                <span>✨ Admissions Open</span>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-robot"></i>
+                <span>🤖 AI Powered SmartCampus ERP</span>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-graduation-cap"></i>
+                <span>👨‍🎓 Student Portal</span>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-chalkboard-user"></i>
+                <span>👨‍🏫 Faculty Portal</span>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-user"></i>
+                <span>👨‍👩‍👧 Parent Portal</span>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-credit-card"></i>
+                <span>💳 Online Fee Payment</span>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-clock"></i>
+                <span>⏱️ Attendance Management</span>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-file-alt"></i>
+                <span>📋 Examination Portal</span>
+            </div>
+>>>>>>> 5e5bca8 (Updated Files)
         </div>
     </div>
 
