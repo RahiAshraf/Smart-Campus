@@ -1637,6 +1637,179 @@ html.dark-mode .testimonial-info p{
         height:44px;
     }
 }
+<<<<<<< HEAD
+=======
+
+.architecture-section {
+    padding: 90px 5%;
+    background:
+        radial-gradient(circle at top left, rgba(111, 78, 255, 0.12), transparent 35%),
+        #f8f9ff;
+}
+
+.architecture-heading {
+    max-width: 720px;
+    margin: 0 auto 45px;
+    text-align: center;
+}
+
+.section-tag {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #6547e7;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+.architecture-heading h2 {
+    margin: 0 0 14px;
+    color: #1f2440;
+    font-size: clamp(30px, 4vw, 46px);
+}
+
+.architecture-heading p {
+    margin: 0;
+    color: #69708a;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.architecture-container {
+    max-width: 1150px;
+    margin: auto;
+}
+
+.architecture-layer {
+    position: relative;
+    display: flex;
+    gap: 25px;
+    padding: 28px;
+    border: 1px solid rgba(101, 71, 231, 0.15);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 12px 35px rgba(42, 34, 91, 0.08);
+}
+
+.layer-number {
+    display: grid;
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border-radius: 14px;
+    background: #6547e7;
+    color: white;
+    font-weight: 800;
+}
+
+.layer-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.layer-content h3 {
+    margin: 8px 0 20px;
+    color: #242944;
+    font-size: 20px;
+}
+
+.architecture-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 14px;
+}
+
+.architecture-card {
+    display: flex;
+    min-height: 68px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #f1efff;
+    color: #4935b5;
+    font-weight: 700;
+    text-align: center;
+}
+
+.architecture-card i {
+    font-size: 19px;
+}
+
+.architecture-arrow {
+    height: 48px;
+    display: grid;
+    place-items: center;
+    color: #6547e7;
+    font-size: 21px;
+}
+
+.core-layer .architecture-card {
+    background: #eaf8ff;
+    color: #087fa8;
+}
+
+.service-layer .architecture-card {
+    background: #fff3e6;
+    color: #bd6500;
+}
+
+.database-layer {
+    border-color: rgba(12, 157, 123, 0.2);
+}
+
+.database-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px;
+    border-radius: 15px;
+    background: #e7faf4;
+    color: #087b60;
+}
+
+.database-card i {
+    font-size: 34px;
+}
+
+.database-card strong,
+.database-card span {
+    display: block;
+}
+
+.database-card span {
+    margin-top: 5px;
+    color: #58736c;
+    font-size: 14px;
+}
+
+@media (max-width: 650px) {
+    .architecture-section {
+        padding: 65px 18px;
+    }
+
+    .architecture-layer {
+        display: block;
+        padding: 20px;
+    }
+
+    .layer-number {
+        margin-bottom: 12px;
+    }
+
+    .architecture-items {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 420px) {
+    .architecture-items {
+        grid-template-columns: 1fr;
+    }
+}
+>>>>>>> d958eed (Save changes: user requested push (2026-08-08))
     </style>
 </head>
 <body>
@@ -1676,7 +1849,11 @@ html.dark-mode .testimonial-info p{
                 <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                 <li class="nav-item"><a class="nav-link" href="#modules">Modules</a></li>
+<<<<<<< HEAD
                 <li class="nav-item"><a class="nav-link" href="#diagram">ERP Diagram</a></li>
+=======
+                <li class="nav-item"><a class="nav-link" href="#architecture">ERP Diagram</a></li>
+>>>>>>> d958eed (Save changes: user requested push (2026-08-08))
                 <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
 
@@ -1705,6 +1882,7 @@ html.dark-mode .testimonial-info p{
     <!-- Notification Bar -->
     <div class="notification-bar">
         <div class="notification-content">
+<<<<<<< HEAD
 <<<<<<< HEAD
            <div class="notification-item">
     <i class="fas fa-bullhorn"></i>
@@ -1766,6 +1944,8 @@ html.dark-mode .testimonial-info p{
     <span>🤖 AI-Powered SmartCampus Experience</span>
 </div>
 =======
+=======
+>>>>>>> d958eed (Save changes: user requested push (2026-08-08))
             <div class="notification-item">
                 <i class="fas fa-bell"></i>
                 <span>✨ Admissions Open</span>
@@ -1798,7 +1978,10 @@ html.dark-mode .testimonial-info p{
                 <i class="fas fa-file-alt"></i>
                 <span>📋 Examination Portal</span>
             </div>
+<<<<<<< HEAD
 >>>>>>> 5e5bca8 (Updated Files)
+=======
+>>>>>>> d958eed (Save changes: user requested push (2026-08-08))
         </div>
     </div>
 
@@ -2035,6 +2218,7 @@ html.dark-mode .testimonial-info p{
     </section>
 
     <!-- ERP Diagram Section -->
+<<<<<<< HEAD
     <section class="erp-diagram" id="diagram">
         <div class="container-lg">
             <h2 class="section-title" data-aos="fade-up">
@@ -2125,6 +2309,131 @@ html.dark-mode .testimonial-info p{
             </div>
         </div>
     </section>
+=======
+    <section class="architecture-section" id="architecture">
+    <div class="architecture-heading">
+        <span class="section-tag">SYSTEM DESIGN</span>
+        <h2>SmartCampus Architecture</h2>
+        <p>
+            A centralized, role-based architecture connecting users,
+            academic modules and institutional data.
+        </p>
+    </div>
+
+    <div class="architecture-container">
+
+        <div class="architecture-layer">
+            <span class="layer-number">01</span>
+
+            <div class="layer-content">
+                <h3>System Users</h3>
+
+                <div class="architecture-items">
+                    <div class="architecture-card">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span>Admin</span>
+                    </div>
+
+                    <div class="architecture-card">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                        <span>Teacher</span>
+                    </div>
+
+                    <div class="architecture-card">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span>Student</span>
+                    </div>
+
+                    <div class="architecture-card">
+                        <i class="fa-solid fa-people-roof"></i>
+                        <span>Parent</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="architecture-arrow">
+            <i class="fa-solid fa-arrow-down"></i>
+        </div>
+
+        <div class="architecture-layer">
+            <span class="layer-number">02</span>
+
+            <div class="layer-content">
+                <h3>Role-Based Portals</h3>
+
+                <div class="architecture-items">
+                    <div class="architecture-card">Admin Dashboard</div>
+                    <div class="architecture-card">Teacher Portal</div>
+                    <div class="architecture-card">Student Portal</div>
+                    <div class="architecture-card">Parent Portal</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="architecture-arrow">
+            <i class="fa-solid fa-arrow-down"></i>
+        </div>
+
+        <div class="architecture-layer core-layer">
+            <span class="layer-number">03</span>
+
+            <div class="layer-content">
+                <h3>Core Academic Modules</h3>
+
+                <div class="architecture-items">
+                    <div class="architecture-card">Attendance</div>
+                    <div class="architecture-card">Examinations</div>
+                    <div class="architecture-card">Results</div>
+                    <div class="architecture-card">Notifications</div>
+                    <div class="architecture-card">Timetable</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="architecture-arrow">
+            <i class="fa-solid fa-arrow-down"></i>
+        </div>
+
+        <div class="architecture-layer service-layer">
+            <span class="layer-number">04</span>
+
+            <div class="layer-content">
+                <h3>Application Layer</h3>
+
+                <div class="architecture-items">
+                    <div class="architecture-card">PHP Services</div>
+                    <div class="architecture-card">Authentication</div>
+                    <div class="architecture-card">Authorization</div>
+                    <div class="architecture-card">Data Validation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="architecture-arrow">
+            <i class="fa-solid fa-arrow-down"></i>
+        </div>
+
+        <div class="architecture-layer database-layer">
+            <span class="layer-number">05</span>
+
+            <div class="layer-content">
+                <h3>Centralized Data Layer</h3>
+
+                <div class="database-card">
+                    <i class="fa-solid fa-database"></i>
+
+                    <div>
+                        <strong>MySQL Database</strong>
+                        <span>Secure storage of institutional and academic data</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+>>>>>>> d958eed (Save changes: user requested push (2026-08-08))
 
     <!-- Modules Section -->
     <section class="modules" id="modules">
@@ -2138,12 +2447,18 @@ html.dark-mode .testimonial-info p{
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="100"><i class="fas fa-user-tie module-icon"></i><p class="module-name">Parent Portal</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="150"><i class="fas fa-tachometer-alt module-icon"></i><p class="module-name">Admin Dashboard</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="200"><i class="fas fa-user-secret module-icon"></i><p class="module-name">Principal Dashboard</p></div>
+<<<<<<< HEAD
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="250"><i class="fas fa-briefcase module-icon"></i><p class="module-name">HR Management</p></div>
+=======
+>>>>>>> d958eed (Save changes: user requested push (2026-08-08))
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="300"><i class="fas fa-money-bill-wave module-icon"></i><p class="module-name">Finance Module</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="350"><i class="fas fa-file-alt module-icon"></i><p class="module-name">Examination</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="400"><i class="fas fa-book module-icon"></i><p class="module-name">Library</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="450"><i class="fas fa-bus module-icon"></i><p class="module-name">Transport</p></div>
+<<<<<<< HEAD
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="500"><i class="fas fa-bed module-icon"></i><p class="module-name">Hostel</p></div>
+=======
+>>>>>>> d958eed (Save changes: user requested push (2026-08-08))
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="550"><i class="fas fa-robot module-icon"></i><p class="module-name">AI Analytics</p></div>
             </div>
         </div>

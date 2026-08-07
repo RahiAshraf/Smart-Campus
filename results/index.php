@@ -14,8 +14,7 @@ trim($_GET['search']) != ''
 ){
 
 $search = mysqli_real_escape_string(
-$conn,
-trim($_GET['search'])
+$conn,trim($_GET['search'])
 );
 
 $where = "
