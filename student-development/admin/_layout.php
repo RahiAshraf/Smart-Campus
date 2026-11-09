@@ -109,6 +109,8 @@ function sd_admin_header(string $title, string $description, string $active): vo
             .sd-admin-form input,.sd-admin-form select,.sd-admin-form textarea{padding:10px 12px;border:1px solid var(--border-color);border-radius:8px;background:var(--surface);color:var(--text-primary);min-width:150px}
             .sd-admin-form textarea{min-width:260px}.sd-admin-actions{display:flex;gap:6px;flex-wrap:wrap}.sd-admin-muted{color:var(--text-secondary);font-size:13px}
             .sd-admin-alert{padding:12px 15px;border-radius:10px;margin-bottom:18px;background:#ecfdf5;color:#065f46}.sd-admin-alert.error{background:#fef2f2;color:#991b1b}
+            .sd-admin-toast{position:fixed;right:24px;bottom:24px;z-index:10000;max-width:360px;padding:13px 17px;border-radius:12px;background:#065f46;color:#fff;box-shadow:0 12px 30px rgba(15,23,42,.22);font-weight:700}
+            .sd-admin-toast.error{background:#991b1b}
             .sd-admin-section{margin-bottom:24px}.sd-admin-section-header{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:14px}
             .sd-admin-section-header h2{margin:0}.sd-admin-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#ede9fe;color:#5b21b6;font-size:12px;font-weight:700}
             .sd-admin-form input.flatpickr-input,
@@ -195,6 +197,62 @@ function sd_admin_footer(): void
                     animate: true,
                     monthSelectorType: 'dropdown'
                 });
+            });
+
+            const showToast = (message, success) => {
+                const toast = document.createElement('div');
+                toast.className = `sd-admin-toast${success ? '' : ' error'}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                window.setTimeout(() => toast.remove(), 3500);
+            };
+
+            adminRoot.addEventListener('submit', async (event) => {
+                const form = event.target;
+                if (!(form instanceof HTMLFormElement) || form.method.toLowerCase() !== 'post' || form.dataset.ajax === 'off') {
+                    return;
+                }
+
+                event.preventDefault();
+                const submitter = event.submitter;
+                if (submitter && submitter.dataset.confirm && !window.confirm(submitter.dataset.confirm)) {
+                    return;
+                }
+
+                const button = submitter || form.querySelector('button[type="submit"]');
+                const actionName = form.querySelector('input[name="action"]')?.value || '';
+                if (button) {
+                    button.disabled = true;
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = 'Saving...';
+                }
+
+                try {
+                    const response = await fetch(form.action || window.location.href, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                        credentials: 'same-origin'
+                    });
+                    const payload = await response.json();
+                    showToast(payload.message || 'Operation completed.', payload.success === true && response.ok);
+                    if (payload.success === true && form.dataset.ajaxReset === 'true') {
+                        form.reset();
+                    }
+                    if (payload.success === true && form.dataset.ajaxRemove === 'true') {
+                        form.closest('tr, [data-record-row]')?.remove();
+                    }
+                    if (payload.success === true && actionName.indexOf('delete_') === 0) {
+                        form.closest('tr, [data-record-row]')?.remove();
+                    }
+                } catch (error) {
+                    showToast('The operation could not be completed. Please try again.', false);
+                } finally {
+                    if (button) {
+                        button.disabled = false;
+                        button.textContent = button.dataset.originalText || 'Save';
+                    }
+                }
             });
         })();
     </script>

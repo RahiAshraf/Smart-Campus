@@ -18,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             sd_admin_flash('Enter valid student, category, title and status.', 'error');
         } elseif ($id > 0) {
             sd_admin_stmt($conn, 'UPDATE sd_certificates SET student_id = ?, category = ?, title = ?, issuing_organization = ?, achievement_date = ?, verification_status = ?, verified_by = ?, verified_at = NOW(), reviewer_remarks = ? WHERE certificate_id = ?', 'isssssssi', [$studentId, $category, $title, trim($_POST['organization'] ?? ''), $date, $status, $sd_admin_user_id, trim($_POST['remarks'] ?? ''), $id]);
+            if ($status !== 'pending') {
+                $student = sd_admin_rows(sd_admin_stmt($conn, 'SELECT student_id FROM students WHERE id = ?', 'i', [$studentId]))[0]['student_id'] ?? '';
+                sd_admin_publish($conn, $sd_admin_user_id, 'Certificate verification updated', $title . ' was marked ' . $status . '.', ['student:' . $student], 'certificate:' . $id);
+            }
             sd_admin_flash('Certification updated.');
         } else {
             sd_admin_stmt($conn, 'INSERT INTO sd_certificates (student_id, category, title, issuing_organization, achievement_date, file_path, mime_type, verification_status, verified_by, verified_at, reviewer_remarks) VALUES (?, ?, ?, ?, ?, "admin-record", "text/plain", ?, ?, NOW(), ?)', 'isssssis', [$studentId, $category, $title, trim($_POST['organization'] ?? ''), $date, $status, $sd_admin_user_id, trim($_POST['remarks'] ?? '')]);

@@ -45,9 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             sd_admin_flash('Enter an activity title and date.', 'error');
         } elseif ($isNcc) {
             sd_admin_stmt($conn, 'INSERT INTO sd_ncc_activities (title, activity_type, activity_date, venue, hours) VALUES (?, ?, ?, ?, ?)', 'ssssd', [$titleValue, $_POST['activity_type'] ?? 'other', $date, trim($_POST['venue'] ?? ''), (float) ($_POST['hours'] ?? 0)]);
+            sd_admin_publish($conn, $sd_admin_user_id, 'New NCC activity', $titleValue . ' is scheduled for ' . $date . '.', ['role:student', 'role:parent', 'role:teacher'], 'ncc-activity:' . (int) $conn->insert_id);
             sd_admin_flash('NCC activity created.');
         } else {
             sd_admin_stmt($conn, 'INSERT INTO sd_nss_activities (title, activity_type, activity_date, venue, service_hours) VALUES (?, ?, ?, ?, ?)', 'ssssd', [$titleValue, $_POST['activity_type'] ?? 'other', $date, trim($_POST['venue'] ?? ''), (float) ($_POST['hours'] ?? 0)]);
+            sd_admin_publish($conn, $sd_admin_user_id, 'New NSS activity', $titleValue . ' is scheduled for ' . $date . '.', ['role:student', 'role:parent', 'role:teacher'], 'nss-activity:' . (int) $conn->insert_id);
             sd_admin_flash('NSS activity created.');
         }
     } elseif ($action === 'delete_activity') {

@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             sd_admin_flash('Sport updated.');
         } else {
             sd_admin_stmt($conn, 'INSERT INTO sd_sports (name, mode, practice_schedule, status) VALUES (?, ?, ?, ?)', 'ssss', [$name, $mode, trim($_POST['practice_schedule'] ?? ''), $status]);
+            sd_admin_publish($conn, $sd_admin_user_id, 'New sports registration opportunity', $name . ' is open for student participation.', ['role:student', 'role:parent', 'role:teacher'], 'sport:' . (int) $conn->insert_id);
             sd_admin_flash('Sport created.');
         }
     } elseif ($action === 'delete_sport') {
@@ -34,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date = str_replace('T', ' ', $_POST['match_date'] ?? '');
         if ($sportId > 0 && $date !== '') {
             sd_admin_stmt($conn, 'INSERT INTO sd_sports_matches (sport_id, match_date, venue, status) VALUES (?, ?, ?, "scheduled")', 'iss', [$sportId, $date, trim($_POST['venue'] ?? '')]);
+            $sportName = sd_admin_rows(sd_admin_stmt($conn, 'SELECT name FROM sd_sports WHERE sport_id = ?', 'i', [$sportId]))[0]['name'] ?? 'Sports';
+            sd_admin_publish($conn, $sd_admin_user_id, 'New sports event', $sportName . ' event scheduled for ' . $date . '.', ['role:student', 'role:parent', 'role:teacher'], 'match:' . (int) $conn->insert_id);
             sd_admin_flash('Sports event created.');
         }
     } elseif ($action === 'delete_match') {

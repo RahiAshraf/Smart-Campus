@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             sd_admin_flash('Club updated.');
         } else {
             sd_admin_stmt($conn, 'INSERT INTO sd_clubs (name, category, description, status) VALUES (?, ?, ?, ?)', 'ssss', [$name, $category, $description, $status]);
+            sd_admin_publish($conn, $sd_admin_user_id, 'New student club available', $name . ' is now available in Student Development.', ['role:student', 'role:parent', 'role:teacher'], 'club:' . (int) $conn->insert_id);
             sd_admin_flash('Club created.');
         }
     } elseif ($action === 'delete_club') {
@@ -51,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             sd_admin_flash('Enter a valid event title, date and type.', 'error');
         } else {
             sd_admin_stmt($conn, 'INSERT INTO sd_events (title, event_type, description, event_date, venue, organizer_user_id) VALUES (?, ?, ?, ?, ?, ?)', 'sssssi', [$title, $eventType, trim($_POST['description'] ?? ''), $eventDate, trim($_POST['venue'] ?? ''), $sd_admin_user_id]);
+            sd_admin_publish($conn, $sd_admin_user_id, 'New student development event', $title . ' is scheduled for ' . $eventDate . '.', ['role:student', 'role:parent', 'role:teacher'], 'event:' . (int) $conn->insert_id);
             sd_admin_flash('Event created.');
         }
     } elseif ($action === 'delete_event') {
