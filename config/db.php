@@ -6,15 +6,10 @@ if (isset($conn) && $conn instanceof mysqli) {
 
 $host = "localhost";
 $user = "root";
-$password = "";
+$password = "Ashraf@540";
 $database = "MindMerge_db";
 
-$conn = mysqli_connect(
-$host,
-$user,
-$password,
-$database
-);
+$conn = mysqli_connect( $host,$user,$password,$database);
 
 if(!$conn){
 

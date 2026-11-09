@@ -22,6 +22,19 @@ function sidebar_resolve_url(array $config, string $role, string $module_key = '
         return BASE_URL . 'profile/index.php';
     }
 
+    if ($module_key === 'student_development' && strtolower($role) === 'admin') {
+        return BASE_URL . 'student-development/admin/index.php';
+    }
+    if ($module_key === 'student_development' && strtolower($role) === 'teacher') {
+        return BASE_URL . 'student-development/teacher/index.php';
+    }
+    if ($module_key === 'student_development' && strtolower($role) === 'student') {
+        return BASE_URL . 'student-development/student/index.php';
+    }
+    if ($module_key === 'student_development' && strtolower($role) === 'parent') {
+        return BASE_URL . 'student-development/parent/index.php';
+    }
+
     return BASE_URL . ($config['url'] ?? '#');
 }
 

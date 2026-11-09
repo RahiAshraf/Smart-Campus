@@ -1,17 +1,17 @@
 /* Portal sidebar groups */
-<<<<<<< HEAD
+
 .sidebar-group-label,
 .sidebar-group-label span{
-<<<<<<< HEAD
+
     color:#000 !important;
-     padding: 8px 20px 6px; 
+    padding: 8px 20px 6px; 
     font-size:11px;
     font-weight:700;
     letter-spacing:.08em;
     text-transform:uppercase;
-=======
+
 font-size:11px;
-=======
+
 .sidebar-group-label{
 padding:180px 22px 6px;
 list-style:none;
@@ -19,28 +19,22 @@ list-style:none;
 
 .sidebar-group-label span{
 font-size:13px;
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
 font-weight:700;
 letter-spacing:0.08em;
 text-transform:uppercase;
 color:#000000 ;
-<<<<<<< HEAD
->>>>>>> 5e5bca8 (Updated Files)
-=======
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
+
 }
 
 body.dark-mode .sidebar-group-label,
 body.dark-mode .sidebar-group-label span{
-<<<<<<< HEAD
-<<<<<<< HEAD
+ 
+
     color:#000 !important;
-=======
+
 color:rgba(53, 91, 137, 0.7);
->>>>>>> 5e5bca8 (Updated Files)
-=======
+
 color:rgba(53, 91, 137, 0.7);
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
 }
 
 /* Portal dashboards */
@@ -347,4 +341,4 @@ display:none;
 display:block;
 }
 }
-
+}

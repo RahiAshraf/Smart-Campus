@@ -265,6 +265,13 @@ function permission_module_registry(): array
             'action' => 'view',
             'match'  => '/transport/',
         ],
+        'student_development' => [
+            'label'  => 'Student Development',
+            'icon'   => 'fa-medal',
+            'url'    => 'student-development/index.php',
+            'action' => 'view',
+            'match'   => '/student-development/',
+        ],
         'permissions' => [
             'label'  => 'Permissions',
             'icon'   => 'fa-shield-halved',
@@ -450,7 +457,8 @@ function permission_portal_menu_groups(): array
             'notifications',
             'results',
             'exams',
-            'transport'
+            'transport',
+            'student_development'
             ]],
 
             ['label' => 'Finance', 'items' =>
@@ -465,19 +473,19 @@ function permission_portal_menu_groups(): array
             ['label' => 'General', 'items' => ['profile', 'dashboard']],
             ['label' => 'Academics', 'items' => ['teacher_students']],
             ['label' => 'Scheduling', 'items' => ['teacher_timetable']],
-            ['label' => 'Operations', 'items' => ['teacher_student_attendance', 'teacher_my_attendance', 'notifications', 'teacher_results', 'exams', 'transport']],
+            ['label' => 'Operations', 'items' => ['teacher_student_attendance', 'teacher_my_attendance', 'notifications', 'teacher_results', 'exams', 'transport', 'student_development']],
         ],
         'student' => [
             ['label' => 'General', 'items' => ['profile', 'dashboard']],
             ['label' => 'Academics', 'items' => ['student_results']],
             ['label' => 'Scheduling', 'items' => ['student_timetable']],
-            ['label' => 'Operations', 'items' => ['student_attendance', 'notifications', 'exams', 'student_transport']],
+            ['label' => 'Operations', 'items' => ['student_attendance', 'notifications', 'exams', 'student_transport', 'student_development']],
             ['label' => 'Utilities', 'items' => ['digital_id']],
         ],
         'parent' => [
             ['label' => 'General', 'items' => ['profile', 'dashboard']],
             ['label' => 'Academics', 'items' => ['parent_children', 'parent_results']],
-            ['label' => 'Operations', 'items' => ['parent_attendance', 'notifications', 'exams', 'parent_transport']],
+            ['label' => 'Operations', 'items' => ['parent_attendance', 'notifications', 'exams', 'parent_transport', 'student_development']],
         ],'driver' => [
 
                 [
@@ -558,6 +566,7 @@ function permission_portal_menu_groups(): array
     'salaries',
     'billing',
     'transport',
+    'student_development',
     'permissions',
 ];
 

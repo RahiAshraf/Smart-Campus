@@ -1110,29 +1110,49 @@ if(localStorage.getItem("mindmerge-theme")==="dark"){
             color: rgba(255, 255, 255, 0.6);
         }
 
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
+        
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
 
-        .social-link {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
+.social-link {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
 
-        .social-link:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-        }
+/* Facebook */
+.facebook-link:hover {
+    background: #1877F2;
+    transform: translateY(-3px);
+}
+
+/* Twitter */
+.twitter-link:hover {
+    background: #000000;
+    transform: translateY(-3px);
+}
+
+/* LinkedIn */
+.linkedin-link:hover {
+    background: #0A66C2;
+    transform: translateY(-3px);
+}
+
+/* YouTube */
+.youtube-link:hover {
+    background: #FF0000;
+    transform: translateY(-3px);
+}
 
         /* Back to Top Button */
         .back-to-top {
@@ -1637,8 +1657,6 @@ html.dark-mode .testimonial-info p{
         height:44px;
     }
 }
-<<<<<<< HEAD
-=======
 
 .architecture-section {
     padding: 90px 5%;
@@ -1809,7 +1827,6 @@ html.dark-mode .testimonial-info p{
         grid-template-columns: 1fr;
     }
 }
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
     </style>
 </head>
 <body>
@@ -1849,11 +1866,7 @@ html.dark-mode .testimonial-info p{
                 <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                 <li class="nav-item"><a class="nav-link" href="#modules">Modules</a></li>
-<<<<<<< HEAD
-                <li class="nav-item"><a class="nav-link" href="#diagram">ERP Diagram</a></li>
-=======
                 <li class="nav-item"><a class="nav-link" href="#architecture">ERP Diagram</a></li>
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
                 <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
 
@@ -1882,8 +1895,7 @@ html.dark-mode .testimonial-info p{
     <!-- Notification Bar -->
     <div class="notification-bar">
         <div class="notification-content">
-<<<<<<< HEAD
-<<<<<<< HEAD
+
            <div class="notification-item">
     <i class="fas fa-bullhorn"></i>
     <span>📢 Welcome to MindMerge SmartCampus ERP</span>
@@ -1943,9 +1955,7 @@ html.dark-mode .testimonial-info p{
     <i class="fas fa-brain"></i>
     <span>🤖 AI-Powered SmartCampus Experience</span>
 </div>
-=======
-=======
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
+
             <div class="notification-item">
                 <i class="fas fa-bell"></i>
                 <span>✨ Admissions Open</span>
@@ -1978,10 +1988,7 @@ html.dark-mode .testimonial-info p{
                 <i class="fas fa-file-alt"></i>
                 <span>📋 Examination Portal</span>
             </div>
-<<<<<<< HEAD
->>>>>>> 5e5bca8 (Updated Files)
-=======
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
+
         </div>
     </div>
 
@@ -2198,11 +2205,7 @@ html.dark-mode .testimonial-info p{
                     <h3 class="feature-title">Transport Management</h3>
                     <p class="feature-description">Route optimization and student tracking</p>
                 </div>
-                <div class="feature-card" data-aos="zoom-in" data-aos-delay="900">
-                    <div class="feature-icon"><i class="fas fa-bed"></i></div>
-                    <h3 class="feature-title">Hostel Management</h3>
-                    <p class="feature-description">Complete hostel administration and room allocation</p>
-                </div>
+
                 <div class="feature-card" data-aos="zoom-in" data-aos-delay="1000">
                     <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
                     <h3 class="feature-title">AI Analytics</h3>
@@ -2217,99 +2220,6 @@ html.dark-mode .testimonial-info p{
         </div>
     </section>
 
-    <!-- ERP Diagram Section -->
-<<<<<<< HEAD
-    <section class="erp-diagram" id="diagram">
-        <div class="container-lg">
-            <h2 class="section-title" data-aos="fade-up">
-                ERP <span>Architecture</span>
-            </h2>
-            <div class="diagram-container" data-aos="fade-up" data-aos-delay="100">
-                <svg class="diagram-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Admin Box -->
-                    <rect x="400" y="20" width="200" height="60" rx="8" fill="#6366f1" opacity="0.2" stroke="#6366f1" stroke-width="2"/>
-                    <text x="500" y="55" text-anchor="middle" font-weight="bold" font-size="16" fill="#6366f1">ADMIN DASHBOARD</text>
-                    
-                    <!-- Central Lines -->
-                    <line x1="500" y1="80" x2="500" y2="120" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    
-                    <!-- Main User Groups -->
-                    <g>
-                        <!-- Students -->
-                        <rect x="100" y="140" width="120" height="60" rx="8" fill="#06b6d4" opacity="0.2" stroke="#06b6d4" stroke-width="2"/>
-                        <text x="160" y="175" text-anchor="middle" font-weight="bold" font-size="14" fill="#06b6d4">STUDENTS</text>
-                        <line x1="220" y1="170" x2="380" y2="170" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                        
-                        <!-- Faculty -->
-                        <rect x="440" y="140" width="120" height="60" rx="8" fill="#06b6d4" opacity="0.2" stroke="#06b6d4" stroke-width="2"/>
-                        <text x="500" y="175" text-anchor="middle" font-weight="bold" font-size="14" fill="#06b6d4">FACULTY</text>
-                        <line x1="440" y1="170" x2="220" y2="170" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                        
-                        <!-- Parents -->
-                        <rect x="780" y="140" width="120" height="60" rx="8" fill="#06b6d4" opacity="0.2" stroke="#06b6d4" stroke-width="2"/>
-                        <text x="840" y="175" text-anchor="middle" font-weight="bold" font-size="14" fill="#06b6d4">PARENTS</text>
-                        <line x1="780" y1="170" x2="620" y2="170" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    </g>
-                    
-                    <!-- Horizontal line from all users -->
-                    <line x1="160" y1="200" x2="160" y2="250" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="160" y1="250" x2="840" y2="250" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="500" y1="200" x2="500" y2="250" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="840" y1="200" x2="840" y2="250" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    
-                    <!-- Core Modules -->
-                    <g>
-                        <rect x="50" y="280" width="110" height="50" rx="6" fill="#ec4899" opacity="0.2" stroke="#ec4899" stroke-width="2"/>
-                        <text x="105" y="310" text-anchor="middle" font-weight="bold" font-size="12" fill="#ec4899">Attendance</text>
-                        
-                        <rect x="180" y="280" width="110" height="50" rx="6" fill="#ec4899" opacity="0.2" stroke="#ec4899" stroke-width="2"/>
-                        <text x="235" y="310" text-anchor="middle" font-weight="bold" font-size="12" fill="#ec4899">Exams</text>
-                        
-                        <rect x="310" y="280" width="110" height="50" rx="6" fill="#ec4899" opacity="0.2" stroke="#ec4899" stroke-width="2"/>
-                        <text x="365" y="310" text-anchor="middle" font-weight="bold" font-size="12" fill="#ec4899">Fees</text>
-                        
-                        <rect x="440" y="280" width="110" height="50" rx="6" fill="#ec4899" opacity="0.2" stroke="#ec4899" stroke-width="2"/>
-                        <text x="495" y="310" text-anchor="middle" font-weight="bold" font-size="12" fill="#ec4899">Library</text>
-                        
-                        <rect x="570" y="280" width="110" height="50" rx="6" fill="#ec4899" opacity="0.2" stroke="#ec4899" stroke-width="2"/>
-                        <text x="625" y="310" text-anchor="middle" font-weight="bold" font-size="12" fill="#ec4899">Timetable</text>
-                        
-                        <rect x="700" y="280" width="110" height="50" rx="6" fill="#ec4899" opacity="0.2" stroke="#ec4899" stroke-width="2"/>
-                        <text x="755" y="310" text-anchor="middle" font-weight="bold" font-size="12" fill="#ec4899">Hostel</text>
-                        
-                        <rect x="830" y="280" width="110" height="50" rx="6" fill="#ec4899" opacity="0.2" stroke="#ec4899" stroke-width="2"/>
-                        <text x="885" y="310" text-anchor="middle" font-weight="bold" font-size="12" fill="#ec4899">Transport</text>
-                    </g>
-                    
-                    <!-- Vertical connections -->
-                    <line x1="105" y1="280" x2="105" y2="350" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="235" y1="280" x2="235" y2="350" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="365" y1="280" x2="365" y2="350" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="495" y1="280" x2="495" y2="350" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="625" y1="280" x2="625" y2="350" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="755" y1="280" x2="755" y2="350" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="885" y1="280" x2="885" y2="350" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    
-                    <!-- Horizontal line through modules -->
-                    <line x1="50" y1="350" x2="940" y2="350" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    
-                    <!-- Database & Cloud -->
-                    <rect x="350" y="380" width="150" height="50" rx="8" fill="#10b981" opacity="0.2" stroke="#10b981" stroke-width="2"/>
-                    <text x="425" y="410" text-anchor="middle" font-weight="bold" font-size="14" fill="#10b981">DATABASE</text>
-                    
-                    <rect x="550" y="380" width="150" height="50" rx="8" fill="#f59e0b" opacity="0.2" stroke="#f59e0b" stroke-width="2"/>
-                    <text x="625" y="410" text-anchor="middle" font-weight="bold" font-size="14" fill="#f59e0b">CLOUD</text>
-                    
-                    <line x1="425" y1="350" x2="425" y2="380" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    <line x1="625" y1="350" x2="625" y2="380" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,5"/>
-                    
-                    <!-- Legend -->
-                    <text x="50" y="520" font-size="12" fill="#6366f1" font-weight="bold">Data Flow →  System Integration →  Cloud Synchronization</text>
-                </svg>
-            </div>
-        </div>
-    </section>
-=======
     <section class="architecture-section" id="architecture">
     <div class="architecture-heading">
         <span class="section-tag">SYSTEM DESIGN</span>
@@ -2433,8 +2343,6 @@ html.dark-mode .testimonial-info p{
 
     </div>
 </section>
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
-
     <!-- Modules Section -->
     <section class="modules" id="modules">
         <div class="container-lg">
@@ -2447,18 +2355,13 @@ html.dark-mode .testimonial-info p{
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="100"><i class="fas fa-user-tie module-icon"></i><p class="module-name">Parent Portal</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="150"><i class="fas fa-tachometer-alt module-icon"></i><p class="module-name">Admin Dashboard</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="200"><i class="fas fa-user-secret module-icon"></i><p class="module-name">Principal Dashboard</p></div>
-<<<<<<< HEAD
+
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="250"><i class="fas fa-briefcase module-icon"></i><p class="module-name">HR Management</p></div>
-=======
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
+
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="300"><i class="fas fa-money-bill-wave module-icon"></i><p class="module-name">Finance Module</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="350"><i class="fas fa-file-alt module-icon"></i><p class="module-name">Examination</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="400"><i class="fas fa-book module-icon"></i><p class="module-name">Library</p></div>
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="450"><i class="fas fa-bus module-icon"></i><p class="module-name">Transport</p></div>
-<<<<<<< HEAD
-                <div class="module-card" data-aos="zoom-in" data-aos-delay="500"><i class="fas fa-bed module-icon"></i><p class="module-name">Hostel</p></div>
-=======
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
                 <div class="module-card" data-aos="zoom-in" data-aos-delay="550"><i class="fas fa-robot module-icon"></i><p class="module-name">AI Analytics</p></div>
             </div>
         </div>
@@ -2620,12 +2523,25 @@ html.dark-mode .testimonial-info p{
                 <div class="footer-section">
                     <h4>MindMerge SmartCampus</h4>
                     <p>A leading IT solutions provider offering innovative software development, cloud services, and digital transformation solutions.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    </div>
+                    
+<div class="social-links">
+    <a href="#" class="social-link facebook-link">
+        <i class="fab fa-facebook-f"></i>
+    </a>
+
+    <a href="#" class="social-link twitter-link">
+        <i class="fab fa-twitter"></i>
+    </a>
+
+    <a href="#" class="social-link linkedin-link">
+        <i class="fab fa-linkedin-in"></i>
+    </a>
+
+    <a href="#" class="social-link youtube-link">
+        <i class="fab fa-youtube"></i>
+    </a>
+</div>
+
                 </div>
                 <div class="footer-section">
                     <h4>Services</h4>

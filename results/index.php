@@ -130,11 +130,7 @@ WHERE status='published'"
 
 $total_marks_entries = mysqli_fetch_assoc(
 
-mysqli_query(
-
-$conn,
-
-"SELECT COUNT(*) total
+mysqli_query($conn,"SELECT COUNT(*) total
 FROM result_marks"
 
 )

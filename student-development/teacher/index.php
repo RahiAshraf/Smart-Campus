@@ -1,0 +1,14 @@
+<?php
+require_once __DIR__ . '/../user/_bootstrap.php';
+require_once __DIR__ . '/../user/_layout.php';
+if ($sd_user_role !== 'teacher') { http_response_code(403); exit('Teacher access only.'); }
+$teacher = sd_user_rows(sd_user_stmt($conn, 'SELECT id FROM teachers WHERE user_id = ? LIMIT 1', 'i', [$sd_user_id]))[0] ?? [];
+$teacherId = (int) ($teacher['id'] ?? 0);
+$assignments = sd_user_rows(sd_user_stmt($conn, 'SELECT DISTINCT c.class_name, sec.section_name, COUNT(s.id) AS student_count FROM teacher_assignments ta JOIN classes c ON c.class_id = ta.class_id JOIN sections sec ON sec.section_id = ta.section_id LEFT JOIN students s ON s.class_id = ta.class_id AND s.section_id = ta.section_id WHERE ta.teacher_id = ? GROUP BY c.class_name, sec.section_name ORDER BY c.class_name, sec.section_name', 'i', [$teacherId]));
+$clubs = sd_user_rows(sd_user_stmt($conn, 'SELECT c.name, c.category, COUNT(cm.membership_id) AS member_count FROM sd_clubs c LEFT JOIN sd_club_members cm ON cm.club_id = c.club_id AND cm.status = "active" WHERE c.coordinator_teacher_id = ? GROUP BY c.club_id ORDER BY c.name', 'i', [$teacherId]));
+sd_user_header('Teacher Development Workspace', 'View assigned student groups and manage the activities delegated to you.', 'overview');
+?>
+<section class="sd-user-grid"><div class="sd-user-card"><div class="sd-user-muted"><i class="fa-solid fa-school"></i> Assigned groups</div><div class="sd-user-value"><?php echo count($assignments); ?></div></div><div class="sd-user-card"><div class="sd-user-muted"><i class="fa-solid fa-people-group"></i> Coordinated clubs</div><div class="sd-user-value"><?php echo count($clubs); ?></div></div></section>
+<section class="sd-user-card sd-user-section"><h2>Assigned class groups</h2><div class="sd-user-table-wrap"><table class="sd-user-table"><thead><tr><th>Class</th><th>Section</th><th>Students</th></tr></thead><tbody><?php foreach($assignments as $item): ?><tr><td><?php echo sd_user_e($item['class_name']); ?></td><td><?php echo sd_user_e($item['section_name']); ?></td><td><?php echo (int) $item['student_count']; ?></td></tr><?php endforeach; ?><?php if(!$assignments): ?><tr><td colspan="3">No assigned groups found.</td></tr><?php endif; ?></tbody></table></div></section>
+<section class="sd-user-card"><h2>Coordinated clubs</h2><div class="sd-user-table-wrap"><table class="sd-user-table"><thead><tr><th>Club</th><th>Category</th><th>Members</th></tr></thead><tbody><?php foreach($clubs as $club): ?><tr><td><?php echo sd_user_e($club['name']); ?></td><td><?php echo sd_user_e(ucfirst($club['category'])); ?></td><td><?php echo (int) $club['member_count']; ?></td></tr><?php endforeach; ?><?php if(!$clubs): ?><tr><td colspan="3">No coordinated clubs found.</td></tr><?php endif; ?></tbody></table></div></section>
+<?php sd_user_footer(); ?>

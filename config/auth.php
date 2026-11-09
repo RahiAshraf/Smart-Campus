@@ -11,6 +11,10 @@ if (!isset($_SESSION['user'])) {
 
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/permissions.php';
+require_once __DIR__ . '/student_development.php';
+
+/* Install only the additive Student Development tables when needed. */
+student_development_ensure_schema($conn);
 
 /*
  * Reload on every authenticated request so role changes and user overrides

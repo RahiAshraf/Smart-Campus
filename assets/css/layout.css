@@ -175,13 +175,7 @@
     color:rgba(255,255,255,.82);
     transition:0.3s;
     font-weight:500;
-<<<<<<< HEAD
-<<<<<<< HEAD
     margin-left:16px;
-=======
->>>>>>> 5e5bca8 (Updated Files)
-=======
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
     }
 
     .sidebar-menu a:hover{
@@ -204,10 +198,7 @@
     font-size:18px;
 
     width:24px;
-<<<<<<< HEAD
     }
-
-<<<<<<< HEAD
 
     .sidebar-group-label,
 .sidebar-group-label span{
@@ -1387,15 +1378,11 @@ body.dark-mode .sidebar-footer{
     /* RESPONSIVE */
 
     @media(max-width:900px){
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
-
     .sidebar{
     left:-270px;
     width:0;
     padding:24px;
     }
-
-<<<<<<< HEAD
 
     /* PROFILE */
 
@@ -1468,7 +1455,6 @@ body.dark-mode .sidebar-footer{
     align-items:center;
     }
 
->>>>>>> 5e5bca8 (Updated Files)
     .menu-close{
     display:block;
     }
@@ -1555,6 +1541,4 @@ body.dark-mode .sidebar-footer{
     .topbar h2{
     font-size:18px;
     }
-
->>>>>>> d958eed (Save changes: user requested push (2026-08-08))
-    }
+}
