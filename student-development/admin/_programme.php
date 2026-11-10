@@ -32,6 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
                 $conn->commit();
+                $application = sd_admin_rows(sd_admin_stmt($conn, 'SELECT student_id FROM sd_programme_applications WHERE application_id = ?', 'i', [$applicationId]))[0] ?? null;
+                if ($application) {
+                    sd_admin_publish($conn, $sd_admin_user_id, strtoupper($programme) . ' application ' . $status, 'Your ' . strtoupper($programme) . ' application was ' . $status . '.', ['student:' . $application['student_id']], 'programme-application-status:' . $applicationId . ':' . $status);
+                }
                 sd_admin_flash($memberLabel . ' application updated.');
             } catch (Throwable $exception) {
                 $conn->rollback();

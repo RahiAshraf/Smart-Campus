@@ -28,6 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'] ?? '';
         if (in_array($status, ['trial', 'selected', 'rejected'], true)) {
             sd_admin_stmt($conn, 'UPDATE sd_sport_applications SET status = ?, trial_date = ?, trial_result = ?, reviewed_by = ?, reviewed_at = NOW() WHERE application_id = ?', 'sssii', [$status, $_POST['trial_date'] ?: null, trim($_POST['trial_result'] ?? ''), $sd_admin_user_id, (int) $_POST['application_id']]);
+            $applicationId = (int) $_POST['application_id'];
+            $application = sd_admin_rows(sd_admin_stmt($conn, 'SELECT a.student_id, sp.name FROM sd_sport_applications a JOIN sd_sports sp ON sp.sport_id = a.sport_id WHERE a.application_id = ?', 'i', [$applicationId]))[0] ?? null;
+            if ($application) {
+                sd_admin_publish($conn, $sd_admin_user_id, 'Sports application ' . $status, 'Your application for ' . $application['name'] . ' was marked ' . $status . '.', ['student:' . $application['student_id']], 'sport-application-status:' . $applicationId . ':' . $status);
+            }
             sd_admin_flash('Sports registration updated.');
         }
     } elseif ($action === 'save_match') {

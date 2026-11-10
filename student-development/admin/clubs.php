@@ -38,6 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     sd_admin_stmt($conn, 'INSERT IGNORE INTO sd_club_members (club_id, student_id, joined_on) SELECT club_id, student_id, CURDATE() FROM sd_club_applications WHERE application_id = ?', 'i', [$applicationId]);
                 }
                 $conn->commit();
+                $application = sd_admin_rows(sd_admin_stmt($conn, 'SELECT a.student_id, c.name FROM sd_club_applications a JOIN sd_clubs c ON c.club_id = a.club_id WHERE a.application_id = ?', 'i', [$applicationId]))[0] ?? null;
+                if ($application) {
+                    sd_admin_publish($conn, $sd_admin_user_id, 'Club application ' . $status, 'Your application for ' . $application['name'] . ' was ' . $status . '.', ['student:' . $application['student_id']], 'club-application-status:' . $applicationId . ':' . $status);
+                }
                 sd_admin_flash('Club application updated.');
             } catch (Throwable $exception) {
                 $conn->rollback();

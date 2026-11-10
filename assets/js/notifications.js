@@ -137,6 +137,16 @@ if (markAllBtn) {
 
 loadBellData();
 
-setInterval(loadBellData, 120000);
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        loadBellData();
+    }
+});
+
+setInterval(() => {
+    if (!document.hidden) {
+        loadBellData();
+    }
+}, 30000);
 
 });

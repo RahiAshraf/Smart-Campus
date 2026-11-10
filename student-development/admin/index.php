@@ -33,7 +33,7 @@ sd_admin_header('Student Development Management', 'Manage student activities, sp
     ] as [$key, $label, $icon, $href]): ?>
         <a class="sd-admin-card" href="<?php echo $href; ?>" style="text-decoration:none;color:inherit">
             <div class="sd-admin-muted"><i class="fa-solid <?php echo $icon; ?>"></i> <?php echo sd_admin_e($label); ?></div>
-            <div class="sd-admin-value"><?php echo number_format($stats[$key]); ?></div>
+            <div class="sd-admin-value" data-live-stat="<?php echo sd_admin_e($key); ?>"><?php echo number_format($stats[$key]); ?></div>
             <span class="sd-admin-muted">Open management module <i class="fa-solid fa-arrow-right"></i></span>
         </a>
     <?php endforeach; ?>
@@ -42,7 +42,7 @@ sd_admin_header('Student Development Management', 'Manage student activities, sp
 <section class="sd-admin-grid">
     <div class="sd-admin-card"><h3>Active clubs</h3><div class="sd-admin-value"><?php echo number_format($clubCount); ?></div></div>
     <div class="sd-admin-card"><h3>Active sports</h3><div class="sd-admin-value"><?php echo number_format($sportCount); ?></div></div>
-    <div class="sd-admin-card"><h3>Pending registrations</h3><div class="sd-admin-value"><?php echo number_format($pending); ?></div></div>
+    <div class="sd-admin-card"><h3>Pending registrations</h3><div class="sd-admin-value" data-live-stat="pending"><?php echo number_format($pending); ?></div><span class="sd-admin-muted" data-live-updated>Live data</span></div>
 </section>
 
 <section class="sd-admin-card">
@@ -53,4 +53,28 @@ sd_admin_header('Student Development Management', 'Manage student activities, sp
         <a class="btn btn-outline-primary" href="achievements.php"><i class="fa-solid fa-certificate"></i> Review certifications</a>
     </div>
 </section>
+<script>
+(() => {
+    const update = async () => {
+        if (document.hidden) return;
+        try {
+            const response = await fetch('live.php', {headers: {'Accept': 'application/json'}, credentials: 'same-origin'});
+            const payload = await response.json();
+            if (!payload.success) return;
+            Object.entries(payload.stats).forEach(([key, value]) => {
+                document.querySelectorAll(`[data-live-stat="${key}"]`).forEach((element) => {
+                    element.textContent = Number(value).toLocaleString();
+                });
+            });
+            const stamp = document.querySelector('[data-live-updated]');
+            if (stamp) stamp.textContent = 'Updated just now';
+        } catch (error) {
+            const stamp = document.querySelector('[data-live-updated]');
+            if (stamp) stamp.textContent = 'Live update unavailable';
+        }
+    };
+    document.addEventListener('visibilitychange', update);
+    window.setInterval(update, 30000);
+})();
+</script>
 <?php sd_admin_footer(); ?>

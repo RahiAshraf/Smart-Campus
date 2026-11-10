@@ -6,15 +6,69 @@ $studentId = sd_user_student_id($conn, $sd_user_id);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     sd_user_require_csrf();
     $action = $_POST['action'] ?? '';
-    if ($action === 'club_apply') {
-        sd_user_stmt($conn, 'INSERT IGNORE INTO sd_club_applications (club_id, student_id) SELECT club_id, ? FROM sd_clubs WHERE club_id = ? AND registration_open = 1 AND published = 1 AND status = "active"', 'ii', [$studentId, (int) $_POST['club_id']]);
+    $success = false;
+    $message = 'No valid application action was submitted.';
+    if ($studentId <= 0) {
+        $message = 'Your student profile is not linked to this account.';
+    } elseif ($action === 'club_apply') {
+        $clubId = (int) ($_POST['club_id'] ?? 0);
+        $club = sd_user_rows(sd_user_stmt($conn, 'SELECT name FROM sd_clubs WHERE club_id = ? AND registration_open = 1 AND published = 1 AND status = "active" LIMIT 1', 'i', [$clubId]))[0] ?? null;
+        if ($club) {
+            $existing = sd_user_rows(sd_user_stmt($conn, 'SELECT status FROM sd_club_applications WHERE club_id = ? AND student_id = ? LIMIT 1', 'ii', [$clubId, $studentId]))[0] ?? null;
+            if ($existing) {
+                $message = 'You already have a club application with status: ' . $existing['status'] . '.';
+            } else {
+                sd_user_stmt($conn, 'INSERT INTO sd_club_applications (club_id, student_id) VALUES (?, ?)', 'ii', [$clubId, $studentId]);
+                sd_user_notify_admins($conn, $sd_user_id, 'New club application', 'A student applied to ' . $club['name'] . '.', 'club-application:' . $clubId . ':' . $studentId);
+                $success = true;
+                $message = 'Your club application was submitted for review.';
+            }
+        } else {
+            $message = 'This club is no longer accepting applications.';
+        }
     } elseif ($action === 'sport_apply') {
-        sd_user_stmt($conn, 'INSERT IGNORE INTO sd_sport_applications (sport_id, student_id) SELECT sport_id, ? FROM sd_sports WHERE sport_id = ? AND registration_open = 1 AND published = 1 AND status = "active"', 'ii', [$studentId, (int) $_POST['sport_id']]);
+        $sportId = (int) ($_POST['sport_id'] ?? 0);
+        $sport = sd_user_rows(sd_user_stmt($conn, 'SELECT name FROM sd_sports WHERE sport_id = ? AND registration_open = 1 AND published = 1 AND status = "active" LIMIT 1', 'i', [$sportId]))[0] ?? null;
+        if ($sport) {
+            $existing = sd_user_rows(sd_user_stmt($conn, 'SELECT status FROM sd_sport_applications WHERE sport_id = ? AND student_id = ? LIMIT 1', 'ii', [$sportId, $studentId]))[0] ?? null;
+            if ($existing) {
+                $message = 'You already have a sports application with status: ' . $existing['status'] . '.';
+            } else {
+                sd_user_stmt($conn, 'INSERT INTO sd_sport_applications (sport_id, student_id) VALUES (?, ?)', 'ii', [$sportId, $studentId]);
+                sd_user_notify_admins($conn, $sd_user_id, 'New sports application', 'A student applied for ' . $sport['name'] . '.', 'sport-application:' . $sportId . ':' . $studentId);
+                $success = true;
+                $message = 'Your sports application was submitted for review.';
+            }
+        } else {
+            $message = 'This sport is no longer accepting applications.';
+        }
     } elseif ($action === 'programme_apply') {
         $key = $_POST['programme_key'] ?? '';
-        if (in_array($key, ['ncc', 'nss'], true)) { sd_user_stmt($conn, 'INSERT IGNORE INTO sd_programme_applications (programme_key, student_id) SELECT ?, ? FROM sd_programme_settings WHERE programme_key = ? AND registration_open = 1', 'sis', [$key, $studentId, $key]); }
+        if (in_array($key, ['ncc', 'nss'], true)) {
+            $existing = sd_user_rows(sd_user_stmt($conn, 'SELECT status FROM sd_programme_applications WHERE programme_key = ? AND student_id = ? LIMIT 1', 'si', [$key, $studentId]))[0] ?? null;
+            if ($existing) {
+                $message = 'You already have a ' . strtoupper($key) . ' application with status: ' . $existing['status'] . '.';
+            } else {
+                $programmeOpen = sd_user_rows(sd_user_stmt($conn, 'SELECT programme_key FROM sd_programme_settings WHERE programme_key = ? AND registration_open = 1 LIMIT 1', 's', [$key]));
+                if (!$programmeOpen) {
+                    $message = 'Registration for ' . strtoupper($key) . ' is currently closed.';
+                } else {
+                    sd_user_stmt($conn, 'INSERT INTO sd_programme_applications (programme_key, student_id) VALUES (?, ?)', 'si', [$key, $studentId]);
+                    sd_user_notify_admins($conn, $sd_user_id, 'New ' . strtoupper($key) . ' application', 'A student applied to the ' . strtoupper($key) . ' programme.', 'programme-application:' . $key . ':' . $studentId);
+                    $success = true;
+                    $message = 'Your ' . strtoupper($key) . ' application was submitted for review.';
+                }
+            }
+        }
     }
-    header('Location: ' . $_SERVER['REQUEST_URI']); exit;
+
+    if (sd_user_is_ajax()) {
+        sd_user_json($success, $message, $success ? 200 : 422);
+    }
+
+    sd_user_flash($message, $success ? 'success' : 'error');
+    header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+    exit;
 }
 $clubCount = (int) (sd_user_rows(sd_user_stmt($conn, 'SELECT COUNT(*) total FROM sd_club_members WHERE student_id = ? AND status = "active"', 'i', [$studentId]))[0]['total'] ?? 0);
 $sportCount = (int) (sd_user_rows(sd_user_stmt($conn, 'SELECT COUNT(*) total FROM sd_sport_applications WHERE student_id = ? AND status = "selected"', 'i', [$studentId]))[0]['total'] ?? 0);
